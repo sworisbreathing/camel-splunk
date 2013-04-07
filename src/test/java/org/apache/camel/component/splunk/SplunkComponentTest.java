@@ -4,11 +4,11 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.junit.Test;
+import org.junit.Ignore;
 
 public class SplunkComponentTest extends CamelTestSupport {
 
-	@Test
+	@Ignore("run manually")
 	public void testStreamWriter() throws Exception {
 		MockEndpoint mock = getMockEndpoint("mock:stream-result");
 		mock.expectedMinimumMessageCount(1);
@@ -20,7 +20,7 @@ public class SplunkComponentTest extends CamelTestSupport {
 		assertMockEndpointsSatisfied();
 	}
 
-	@Test
+	@Ignore("run manually")
 	public void testSubmitWriter() throws Exception {
 		MockEndpoint mock = getMockEndpoint("mock:submitresult");
 		mock.expectedMinimumMessageCount(1);
@@ -32,7 +32,7 @@ public class SplunkComponentTest extends CamelTestSupport {
 		assertMockEndpointsSatisfied();
 	}
 
-	@Test
+	@Ignore("run manually")
 	public void testTcpWriter() throws Exception {
 		MockEndpoint mock = getMockEndpoint("mock:tcpresult");
 		mock.expectedMinimumMessageCount(1);
