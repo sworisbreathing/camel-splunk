@@ -7,7 +7,6 @@ import java.io.Writer;
 import java.net.Socket;
 
 import org.apache.camel.component.splunk.event.SplunkEvent;
-import org.apache.camel.util.IOHelper;
 import org.apache.log4j.Logger;
 
 import com.splunk.Args;
@@ -37,8 +36,6 @@ public abstract class SplunkDataWriter implements DataWriter {
 		Writer writer = new OutputStreamWriter(ostream, "UTF-8");
 		writer.write(event.toString());
 		writer.flush();
-		IOHelper.close(writer);
-		IOHelper.close(ostream);
 	}
 
 	public Args getArgs() {

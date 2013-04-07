@@ -18,7 +18,16 @@ public class SplunkConfiguration {
 	private String index;
 	private String sourceType;
 	private String source;
+	private int tcpRecieverPort;
 	private WriterType writerType = WriterType.stream;
+
+	public int getTcpRecieverPort() {
+		return tcpRecieverPort;
+	}
+
+	public void setTcpRecieverPort(int tcpRecieverPort) {
+		this.tcpRecieverPort = tcpRecieverPort;
+	}
 
 	public String getSourceType() {
 		return sourceType;

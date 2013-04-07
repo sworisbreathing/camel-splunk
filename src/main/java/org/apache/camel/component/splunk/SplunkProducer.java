@@ -48,7 +48,7 @@ public class SplunkProducer extends DefaultProducer {
 		case tcp: {
 			LOG.info("Creating TcpDataWriter");
 			dataWriter = new TcpDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
-			((TcpDataWriter) dataWriter).setPort(endpoint.getConfiguration().getPort());
+			((TcpDataWriter) dataWriter).setPort(endpoint.getConfiguration().getTcpRecieverPort());
 			LOG.info("TcpDataWriter created for endpoint " + endpoint);
 			break;
 		}
