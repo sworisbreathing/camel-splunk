@@ -25,7 +25,7 @@
 	<dependency>
 		<groupId>com.splunk</groupId>
 		<artifactId>splunk</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</dependency>
     <!-- logging -->
     <dependency>
@@ -84,8 +84,8 @@
   </build>
   <repositories>
   	<repository>
-  		<id>spring snapshot</id>
-  		<url>http://repo.springsource.org/libs-milestone</url>
+    	<id>ext-release-local</id>
+    	<url>http://splunk.artifactoryonline.com/splunk/ext-releases-local</url>
   	</repository>
   </repositories>
 
