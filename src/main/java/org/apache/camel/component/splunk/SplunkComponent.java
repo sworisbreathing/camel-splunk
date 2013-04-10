@@ -13,6 +13,7 @@ public class SplunkComponent extends DefaultComponent {
 	protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
 		SplunkConfiguration configuration = new SplunkConfiguration();
 		setProperties(configuration, parameters);
+
 		Endpoint endpoint = new SplunkEndpoint(uri, this, configuration);
 		return endpoint;
 	}

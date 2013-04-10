@@ -42,6 +42,7 @@ public abstract class SplunkDataWriter implements DataWriter {
 		return args;
 	}
 
+	@Override
 	public synchronized void start() {
 		try {
 			socket = createSocket(service);
@@ -51,6 +52,7 @@ public abstract class SplunkDataWriter implements DataWriter {
 		}
 	}
 
+	@Override
 	public synchronized void stop() {
 		try {
 			if (socket != null) {

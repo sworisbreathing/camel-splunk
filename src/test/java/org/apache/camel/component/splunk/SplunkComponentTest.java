@@ -5,10 +5,23 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
+import org.junit.Test;
 
+@Ignore("run requires local installd and running splunk server")
 public class SplunkComponentTest extends CamelTestSupport {
-
-	@Ignore("run manually")
+	// TEST WILL RUN ON SPLUNK DEFAULT LOCALHOST+PORT
+	// the Splunk username/pw created when Splunk was initialized during your login.
+	private final String SPLUNK_USERNAME = "admin";
+	private final String SPLUNK_PASSWORD = "preben1212";
+	
+	//Index name created in Splunk for integration test
+	private final String INDEX = "junit";
+	
+	//Splunk tcp reciever port configured in Splunk
+	private final String TCP_RECIEVER_PORT = "9997";
+	
+	
+	@Test
 	public void testStreamWriter() throws Exception {
 		MockEndpoint mock = getMockEndpoint("mock:stream-result");
 		mock.expectedMinimumMessageCount(1);
@@ -20,7 +33,7 @@ public class SplunkComponentTest extends CamelTestSupport {
 		assertMockEndpointsSatisfied();
 	}
 
-	@Ignore("run manually")
+	@Test
 	public void testSubmitWriter() throws Exception {
 		MockEndpoint mock = getMockEndpoint("mock:submitresult");
 		mock.expectedMinimumMessageCount(1);
@@ -32,7 +45,7 @@ public class SplunkComponentTest extends CamelTestSupport {
 		assertMockEndpointsSatisfied();
 	}
 
-	@Ignore("run manually")
+	@Test
 	public void testTcpWriter() throws Exception {
 		MockEndpoint mock = getMockEndpoint("mock:tcpresult");
 		mock.expectedMinimumMessageCount(1);
@@ -49,13 +62,26 @@ public class SplunkComponentTest extends CamelTestSupport {
 		return new RouteBuilder() {
 			public void configure() {
 				from("direct:stream")
-						.to("splunk://stream1?host=localhost&port=8089&username=admin&password=preben1212&writerType=stream&index=stream-test&sourceType=StreamSourceTypee&source=StreamSource")
+						.to("splunk://stream1?username=" + SPLUNK_USERNAME + 
+								"&password="+ SPLUNK_PASSWORD + 
+								"&writerType=stream" +
+								"&index=" + INDEX + 
+								"&sourceType=StreamSourceTypee&source=StreamSource")
 						.to("mock:stream-result");
+				
 				from("direct:submit")
-						.to("splunk://submit1?host=localhost&port=8089&username=admin&password=preben1212&writerType=submit&index=test&sourceType=testSource&source=test")
+						.to("splunk://submit1?username=" + SPLUNK_USERNAME +
+								"&password=" + SPLUNK_PASSWORD +
+								"&writerType=submit&index=" + INDEX +
+								"test&sourceType=testSource&source=test")
 						.to("mock:submitresult");
+				
 				from("direct:tcp")
-						.to("splunk://tcp1?host=localhost&port=8089&username=admin&password=preben1212&writerType=tcp&tcpRecieverPort=9997&index=test&sourceType=testSource&source=test")
+						.to("splunk://tcp1?username=" + SPLUNK_USERNAME +
+								"&password=" + SPLUNK_PASSWORD +
+								"&writerType=tcp&tcpRecieverPort=" + TCP_RECIEVER_PORT + 
+								"&index=" + INDEX +
+								"&sourceType=testSource&source=test")
 						.to("mock:tcpresult");
 			}
 		};

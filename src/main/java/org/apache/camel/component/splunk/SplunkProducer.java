@@ -4,7 +4,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.component.splunk.SplunkConfiguration.WriterType;
 import org.apache.camel.component.splunk.event.SplunkEvent;
-import org.apache.camel.component.splunk.producer.SplunkDataWriter;
+import org.apache.camel.component.splunk.producer.DataWriter;
 import org.apache.camel.component.splunk.producer.StreamDataWriter;
 import org.apache.camel.component.splunk.producer.SubmitDataWriter;
 import org.apache.camel.component.splunk.producer.TcpDataWriter;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class SplunkProducer extends DefaultProducer {
 	private static final transient Logger LOG = LoggerFactory.getLogger(SplunkProducer.class);
 	private SplunkEndpoint endpoint;
-	private SplunkDataWriter dataWriter;
+	private DataWriter dataWriter;
 
 	public SplunkProducer(SplunkEndpoint endpoint) {
 		super(endpoint);
@@ -62,7 +62,7 @@ public class SplunkProducer extends DefaultProducer {
 		case stream: {
 			LOG.info("Creating StreamDataWriter");
 			dataWriter = new StreamDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
-			((StreamDataWriter) dataWriter).setIndexName(endpoint.getConfiguration().getIndex());
+			((StreamDataWriter) dataWriter).setIndex(endpoint.getConfiguration().getIndex());
 			LOG.info("StreamDataWriter created for endpoint " + endpoint);
 			break;
 		}

@@ -12,14 +12,14 @@ import com.splunk.Service;
 
 public class StreamDataWriter extends SplunkDataWriter {
 
-	private String indexName;
+	private String index;
 
 	public StreamDataWriter(Service service, Args args) {
 		super(service, args);
 	}
 
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
+	public void setIndex(String index) {
+		this.index = index;
 	}
 
 	@Override
@@ -28,17 +28,17 @@ public class StreamDataWriter extends SplunkDataWriter {
 		Receiver receiver = null;
 		Socket socket = null;
 
-		if (indexName != null) {
-			indexObject = service.getIndexes().get(indexName);
+		if (index != null) {
+			indexObject = service.getIndexes().get(index);
 			if (indexObject == null) {
-				throw new RuntimeCamelException(String.format("cannot find index [%s]", indexName));
+				throw new RuntimeCamelException(String.format("cannot find index [%s]", index));
 			}
 			socket = indexObject.attach(args);
 		} else {
 			receiver = service.getReceiver();
 			socket = receiver.attach(args);
 		}
-		logger.debug(String.format("created a socket on %s", socket.getRemoteSocketAddress()));
+		logger.trace(String.format("created a socket on %s", socket.getRemoteSocketAddress()));
 		return socket;
 	}
 
