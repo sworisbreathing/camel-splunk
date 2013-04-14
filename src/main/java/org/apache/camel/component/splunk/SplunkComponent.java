@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
+import org.apache.camel.impl.ScheduledPollEndpoint;
 
 /**
  * Represents the component that manages {@link SplunkEndpoint}.
@@ -15,6 +16,7 @@ public class SplunkComponent extends DefaultComponent {
 		setProperties(configuration, parameters);
 
 		Endpoint endpoint = new SplunkEndpoint(uri, this, configuration);
+		((ScheduledPollEndpoint)endpoint).setConsumerProperties(parameters);
 		return endpoint;
 	}
 }

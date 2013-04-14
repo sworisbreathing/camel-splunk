@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
-import org.apache.camel.impl.DefaultEndpoint;
+import org.apache.camel.impl.ScheduledPollEndpoint;
 
 import com.splunk.Args;
 import com.splunk.Service;
@@ -19,7 +19,7 @@ import com.splunk.Service;
 /**
  * Represents a Splunk endpoint.
  */
-public class SplunkEndpoint extends DefaultEndpoint {
+public class SplunkEndpoint extends ScheduledPollEndpoint {
 	private SplunkConfiguration configuration;
 	private Service service;
 
@@ -36,7 +36,9 @@ public class SplunkEndpoint extends DefaultEndpoint {
 	}
 
 	public Consumer createConsumer(Processor processor) throws Exception {
-		return new SplunkConsumer(this, processor);
+		SplunkConsumer consumer = new SplunkConsumer(this, processor);
+		configureConsumer(consumer);
+		return consumer;
 	}
 
 	public boolean isSingleton() {
