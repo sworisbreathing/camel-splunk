@@ -4,8 +4,10 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.test.junit4.CamelTestSupport;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("run manually since it requires a running local splunk server")
 public class SplunkProducerTest extends CamelTestSupport {
 	// TEST WILL RUN ON SPLUNK DEFAULT LOCALHOST+PORT
 	// the Splunk username/pw created when Splunk was initialized during your login.
