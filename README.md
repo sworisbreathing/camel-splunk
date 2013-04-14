@@ -55,8 +55,8 @@ URI options:
     <td>Splunk password</td>
   </tr>
   <tr>
-    <th>timeout</th>
-    <td>0</td>
+    <th>connectionTimeout</th>
+    <td>5000</td>
     <td>Shared</td>
     <td>Timeout when connecting to Splunk server</td>
   </tr>

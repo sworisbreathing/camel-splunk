@@ -4,11 +4,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("run requires local installd and running splunk server")
-public class SplunkComponentTest extends CamelTestSupport {
+public class SplunkProducerTest extends CamelTestSupport {
 	// TEST WILL RUN ON SPLUNK DEFAULT LOCALHOST+PORT
 	// the Splunk username/pw created when Splunk was initialized during your login.
 	private final String SPLUNK_USERNAME = "admin";
@@ -66,14 +64,14 @@ public class SplunkComponentTest extends CamelTestSupport {
 								"&password="+ SPLUNK_PASSWORD + 
 								"&writerType=stream" +
 								"&index=" + INDEX + 
-								"&sourceType=StreamSourceTypee&source=StreamSource")
+								"&sourceType=StreamSourceType&source=StreamSource")
 						.to("mock:stream-result");
 				
 				from("direct:submit")
 						.to("splunk://submit1?username=" + SPLUNK_USERNAME +
 								"&password=" + SPLUNK_PASSWORD +
 								"&writerType=submit&index=" + INDEX +
-								"test&sourceType=testSource&source=test")
+								"&sourceType=testSource&source=test")
 						.to("mock:submitresult");
 				
 				from("direct:tcp")

@@ -1,5 +1,6 @@
 package org.apache.camel.component.splunk;
 
+import com.splunk.JobArgs.SearchMode;
 import com.splunk.Service;
 
 public class SplunkConfiguration {
@@ -14,12 +15,86 @@ public class SplunkConfiguration {
 	private String owner;
 	private String username;
 	private String password;
-	private int timeout;
+	private int connectionTimeout = 5000;
 	private String index;
 	private String sourceType;
 	private String source;
 	private int tcpRecieverPort;
 	private WriterType writerType = WriterType.stream;
+	
+	//consumer properties
+	private SearchMode searchMode;
+	private int count = 0;
+	private String fieldList;
+	private String search;
+	private String earliestTime;
+	private String latestTime;
+	private String initEarliestTime;
+	private String savedSearch;
+
+	public String getInitEarliestTime() {
+		return initEarliestTime;
+	}
+	
+	public void setInitEarliestTime(String initEarliestTime) {
+		this.initEarliestTime = initEarliestTime;
+	}
+	
+	public SearchMode getSearchMode() {
+		return searchMode;
+	}
+
+	public void setSearchMode(SearchMode searchMode) {
+		this.searchMode = searchMode;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public String getFieldList() {
+		return fieldList;
+	}
+
+	public void setFieldList(String fieldList) {
+		this.fieldList = fieldList;
+	}
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
+	}
+
+	public String getEarliestTime() {
+		return earliestTime;
+	}
+
+	public void setEarliestTime(String earliestTime) {
+		this.earliestTime = earliestTime;
+	}
+
+	public String getLatestTime() {
+		return latestTime;
+	}
+
+	public void setLatestTime(String latestTime) {
+		this.latestTime = latestTime;
+	}
+
+	public String getSavedSearch() {
+		return savedSearch;
+	}
+
+	public void setSavedSearch(String savedSearch) {
+		this.savedSearch = savedSearch;
+	}
 
 	public int getTcpRecieverPort() {
 		return tcpRecieverPort;
@@ -117,11 +192,11 @@ public class SplunkConfiguration {
 		this.password = password;
 	}
 
-	public int getTimeout() {
-		return timeout;
-	}
+	public int getConnectionTimeout() {
+		return connectionTimeout;
+	} 
 
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
+	public void setConnectionTimeout(int timeout) {
+		this.connectionTimeout = timeout;
 	}
 }

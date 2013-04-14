@@ -36,8 +36,7 @@ public class SplunkEndpoint extends DefaultEndpoint {
 	}
 
 	public Consumer createConsumer(Processor processor) throws Exception {
-		throw new UnsupportedOperationException();
-		// return new SplunkConsumer(this, processor);
+		return new SplunkConsumer(this, processor);
 	}
 
 	public boolean isSingleton() {
@@ -89,11 +88,11 @@ public class SplunkEndpoint extends DefaultEndpoint {
 			public Service call() throws Exception {
 				return Service.connect(args);
 			}
-		});
+		}); 
 
 		try {
-			if (configuration.getTimeout() > 0) {
-				service = future.get(configuration.getTimeout(), TimeUnit.MILLISECONDS);
+			if (configuration.getConnectionTimeout() > 0) {
+				service = future.get(configuration.getConnectionTimeout(), TimeUnit.MILLISECONDS);
 			} else {
 				service = future.get();
 			}

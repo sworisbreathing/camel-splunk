@@ -1,39 +1,70 @@
 package org.apache.camel.component.splunk;
 
-import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.apache.camel.impl.ScheduledPollConsumer;
+import org.apache.camel.component.splunk.consumer.SplunkDataReader;
+import org.apache.camel.component.splunk.event.SplunkEvent;
+import org.apache.camel.impl.ScheduledBatchPollingConsumer;
+import org.apache.camel.util.CastUtils;
+import org.apache.camel.util.ObjectHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Splunk consumer.
  */
-public class SplunkConsumer extends ScheduledPollConsumer {
-    private final SplunkEndpoint endpoint;
+public class SplunkConsumer extends ScheduledBatchPollingConsumer {
+	private final static Logger LOG = LoggerFactory.getLogger(SplunkConsumer.class);
+	private SplunkDataReader dataReader;
+	
+	public SplunkConsumer(SplunkEndpoint endpoint, Processor processor) {
+		super(endpoint, processor);
+		dataReader = new SplunkDataReader(endpoint);
+	}
 
-    public SplunkConsumer(SplunkEndpoint endpoint, Processor processor) {
-        super(endpoint, processor);
-        this.endpoint = endpoint;
-    }
+	@Override
+	protected int poll() throws Exception {
+		List<SplunkEvent> events = dataReader.read();
+		Queue<Exchange> exchanges = createExchanges(events);
+		return processBatch(CastUtils.cast(exchanges));
+	}
 
-    @Override
-    protected int poll() throws Exception {
-        Exchange exchange = endpoint.createExchange();
+	protected Queue<Exchange> createExchanges(List<SplunkEvent> splunkEvents) {
+		LOG.trace("Received {} messages in this poll", splunkEvents.size());
+		Queue<Exchange> answer = new LinkedList<Exchange>();
+		for (SplunkEvent splunkEvent : splunkEvents) {
+			Exchange exchange = getEndpoint().createExchange();
+			Message message = exchange.getIn();
+			message.setBody(splunkEvent);
+			answer.add(exchange);
+		}
+		return answer;
+	}
 
-        // create a message body
-        Date now = new Date();
-        exchange.getIn().setBody("Hello World! The time is " + now);
+	@Override
+	public int processBatch(Queue<Object> exchanges) throws Exception {
+		int total = exchanges.size();
 
-        try {
-            // send message to next processor in the route
-            getProcessor().process(exchange);
-            return 1; // number of messages polled
-        } finally {
-            // log exception if an exception occurred and was not handled
-            if (exchange.getException() != null) {
-                getExceptionHandler().handleException("Error processing exchange", exchange, exchange.getException());
-            }
-        }
-    }
+		for (int index = 0; index < total && isBatchAllowed(); index++) {
+			Exchange exchange = ObjectHelper.cast(Exchange.class, exchanges.poll());
+			exchange.setProperty(Exchange.BATCH_INDEX, index);
+			exchange.setProperty(Exchange.BATCH_SIZE, total);
+			exchange.setProperty(Exchange.BATCH_COMPLETE, index == total - 1);
+			try {
+				LOG.trace("Processing exchange [{}]...", exchange);
+				getProcessor().process(exchange);
+			} finally {
+				if (exchange.getException() != null) {
+					getExceptionHandler().handleException("Error processing exchange", exchange,
+							exchange.getException());
+				}
+			}
+		}
+		return total;
+	}
 }
