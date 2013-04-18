@@ -90,4 +90,46 @@ URI options:
     <td>Producer</td>
     <td>Splunk writer type either stream, tcp or submit</td>
   </tr>
+  <tr>
+    <th>searchMode</th>
+    <td>normal</td>
+    <td>Consumer</td>
+    <td>Splunk search mode either normal or realtime</td>
+  </tr>
+   <tr>
+    <th>maxRows</th>
+    <td>0</td>
+    <td>Consumer</td>
+    <td>Max. number of rows to return pr. poll</td>
+  </tr>
+  <tr>
+    <th>fieldList</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>Comma separated list of fields to return</td>
+  </tr>
+  <tr>
+    <th>search</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>The Splunk query to run</td>
+  </tr>
+  <tr>
+    <th>earliestTime</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>Earliest time of the time window</td>
+  </tr>
+  <tr>
+    <th>latestTime</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>Latest time of the time window</td>
+  </tr>
+  <tr>
+    <th>initEarliestTime</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>Initial start offset of the first search</td>
+  </tr>
 </table>

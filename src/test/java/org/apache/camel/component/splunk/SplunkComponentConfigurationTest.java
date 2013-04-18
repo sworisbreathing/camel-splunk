@@ -61,16 +61,13 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
 		component.setCamelContext(context);
 		SplunkEndpoint endpoint = (SplunkEndpoint) component
 				.createEndpoint("splunk://test?username=test&password=pw&host=myhost&port=3333&delay=10s&" +
-						"search=Splunk search query goes here&index=myindex&sourceType=testSource&" +
-						"source=test&initEarliestTime=-1d&latestTime=now&fieldList=field1,field2&maxRows=10&" +
+						"search=Splunk search query goes here&initEarliestTime=-1d" +
+						"&latestTime=now&fieldList=field1,field2&maxRows=10&" +
 						"owner=me&app=fantasticapp");
 		assertEquals("myhost", endpoint.getConfiguration().getHost());
 		assertEquals(3333, endpoint.getConfiguration().getPort());
 		assertEquals("test", endpoint.getConfiguration().getUsername());
 		assertEquals("pw", endpoint.getConfiguration().getPassword());
-		assertEquals("myindex", endpoint.getConfiguration().getIndex());
-		assertEquals("testSource", endpoint.getConfiguration().getSourceType());
-		assertEquals("test", endpoint.getConfiguration().getSource());
 		assertEquals("-1d", endpoint.getConfiguration().getInitEarliestTime());
 		assertEquals("now", endpoint.getConfiguration().getLatestTime());
 		assertEquals("field1,field2", endpoint.getConfiguration().getFieldList());
