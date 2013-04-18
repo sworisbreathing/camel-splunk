@@ -46,12 +46,6 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
 	}
 
 	@Override
-	protected void doStart() throws Exception {
-		super.doStart();
-		service = getService();
-	}
-
-	@Override
 	protected void doStop() throws Exception {
 		service = null;
 		super.doStop();

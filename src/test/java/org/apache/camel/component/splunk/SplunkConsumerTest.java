@@ -40,6 +40,24 @@ public class SplunkConsumerTest extends CamelTestSupport {
 		assertEquals("value3", data.get("key3"));
 	}
 
+	@Test
+	public void testFieldListSearch() throws Exception {
+		MockEndpoint searchMock = getMockEndpoint("mock:search-result2");
+		searchMock.expectedMessageCount(1);
+		getMockEndpoint("mock:submit-result").expectedMessageCount(1);
+			
+		SplunkEvent splunkEvent = new SplunkEvent();
+		splunkEvent.addPair("key1", "value1");
+		splunkEvent.addPair("key2", "value2");
+		splunkEvent.addPair("key3", "value3");
+		template.sendBody("direct:submit", splunkEvent);
+		assertMockEndpointsSatisfied();
+		SplunkEvent recieved = searchMock.getReceivedExchanges().get(0).getIn().getBody(SplunkEvent.class);
+		assertNotNull(recieved);
+		Map<String, String> data = recieved.getEventData();
+		assertEquals("value1", data.get("key1"));
+	}
+
 	@Override
 	protected RouteBuilder createRouteBuilder() throws Exception {
 		return new RouteBuilder() {
@@ -52,6 +70,10 @@ public class SplunkConsumerTest extends CamelTestSupport {
 				from("splunk://search1?delay=5s&username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD +
 						"&searchMode=NORMAL&initEarliestTime=-10s&latestTime=now"+
 						"&search=search index=" + INDEX + " sourcetype=testSource").to("mock:search-result");
+				
+				from("splunk://search2?delay=5s&username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD +
+						"&searchMode=NORMAL&initEarliestTime=-10s&latestTime=now"+
+						"&search=search index=" + INDEX + " sourcetype=testSource&fieldList=key1").to("mock:search-result2");
 			}
 		};
 	}

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.camel.component.splunk.SplunkEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
@@ -19,8 +18,6 @@ import com.splunk.Job;
 import com.splunk.JobArgs.SearchMode;
 import com.splunk.ResultsReader;
 import com.splunk.ResultsReaderXml;
-import com.splunk.SavedSearch;
-import com.splunk.SavedSearchCollection;
 import com.splunk.Service;
 
 public class SplunkDataReader {
@@ -29,8 +26,6 @@ public class SplunkDataReader {
 	private static final String SPLUNK_TIME_FORMAT = "%m/%d/%y %H:%M:%S:%3N";
 
 	private static final Logger logger = Logger.getLogger(SplunkDataReader.class);
-
-
 
 	private transient Calendar lastSuccessfulReadTime;
 	
@@ -44,8 +39,8 @@ public class SplunkDataReader {
 		return endpoint.getConfiguration().getSearchMode();
 	}
 
-	public int getCount() {
-		return endpoint.getConfiguration().getCount();
+	public int getMaxRows() {
+		return endpoint.getConfiguration().getMaxRows();
 	}
 
 	public String getFieldList() {
@@ -63,11 +58,6 @@ public class SplunkDataReader {
 	public String getLatestTime() {
 		return endpoint.getConfiguration().getLatestTime();
 	}
-
-	public String getSavedSearch() {
-		return endpoint.getConfiguration().getSavedSearch();
-	}
-
 
 	public String getInitEarliestTime() {
 		return endpoint.getConfiguration().getInitEarliestTime();
@@ -214,74 +204,6 @@ public class SplunkDataReader {
 		return data;
 	}
 
-	/**
-	 * @throws Exception
-	 *
-	 */
-	private List<SplunkEvent> exportSearch() throws Exception {
-		logger.debug("export start");
-		List<SplunkEvent> result = new ArrayList<SplunkEvent>();
-		HashMap<String, String> data;
-		SplunkEvent splunkData;
-
-		Args queryArgs = new Args();
-		Calendar startTime = Calendar.getInstance();
-		populateArgs(queryArgs, startTime, false);
-		queryArgs.put("output_mode", "xml");
-
-		Service service = endpoint.getService();
-		InputStream os = service.export(getSearch(), queryArgs);
-		ResultsReaderXml resultsReader = new ResultsReaderXml(os);
-		while ((data = resultsReader.getNextEvent()) != null) {
-			splunkData = new SplunkEvent(data);
-			result.add(splunkData);
-		}
-		//TODO os and reader should be closed
-		return result;
-	}
-
-	private List<SplunkEvent> savedSearch() throws Exception {
-		logger.debug("saved search start");
-
-		Args queryArgs = new Args();
-		queryArgs.put("app", "search");
-		if (ObjectHelper.isNotEmpty(endpoint.getConfiguration().getOwner())) {
-			queryArgs.put("owner", endpoint.getConfiguration().getOwner());
-		}
-		if (ObjectHelper.isNotEmpty(endpoint.getConfiguration().getApp())) {
-			queryArgs.put("app", endpoint.getConfiguration().getApp());
-		}
-
-		Calendar startTime = Calendar.getInstance();
-
-			SavedSearch search = null;
-			Job job = null;
-			String latestTime = getLatestTime(startTime, false);
-			String earliestTime = getEarliestTime(startTime, false);
-
-			Service service = endpoint.getService();
-			SavedSearchCollection savedSearches = service.getSavedSearches(queryArgs);
-			for (SavedSearch s : savedSearches.values()) {
-				if (s.getName().equals(getSavedSearch())) {
-					search = s;
-				}
-			}
-			if (search != null) {
-				Map<String, String> args = new HashMap<String, String>();
-				args.put("force_dispatch", "true");
-				args.put("dispatch.earliest_time", earliestTime);
-				args.put("dispatch.latest_time", latestTime);
-				job = search.dispatch(args);
-			}
-			while (!job.isDone()) {
-				Thread.sleep(2000);
-			}
-			List<SplunkEvent> data = extractData(job);
-			this.lastSuccessfulReadTime = startTime;
-			return data;
-
-	}
-
 	private List<SplunkEvent> extractData(Job job) throws Exception {
 		List<SplunkEvent> result = new ArrayList<SplunkEvent>();
 		HashMap<String, String> data;
@@ -289,7 +211,7 @@ public class SplunkDataReader {
 		ResultsReader resultsReader;
 		int total = job.getResultCount();
 
-		if (getCount() == 0 || total < getCount()) {
+		if (getMaxRows() == 0 || total < getMaxRows()) {
 			InputStream stream = null;
 			Args outputArgs = new Args();
 			outputArgs.put("output_mode", "xml");
@@ -306,7 +228,7 @@ public class SplunkDataReader {
 				InputStream stream = null;
 				Args outputArgs = new Args();
 				outputArgs.put("output_mode", "xml");
-				outputArgs.put("count", getCount());
+				outputArgs.put("count", getMaxRows());
 				outputArgs.put("offset", offset);
 				stream = job.getResults(outputArgs);
 				resultsReader = new ResultsReaderXml(stream);
@@ -314,7 +236,7 @@ public class SplunkDataReader {
 					splunkData = new SplunkEvent(data);
 					result.add(splunkData);
 				}
-				offset += getCount();
+				offset += getMaxRows();
 			}
 		}
 		return result;

@@ -23,14 +23,13 @@ public class SplunkConfiguration {
 	private WriterType writerType = WriterType.stream;
 	
 	//consumer properties
-	private SearchMode searchMode;
-	private int count = 0;
+	private SearchMode searchMode  = SearchMode.NORMAL;
+	private int maxRows = 0;
 	private String fieldList;
 	private String search;
 	private String earliestTime;
 	private String latestTime;
 	private String initEarliestTime;
-	private String savedSearch;
 
 	public String getInitEarliestTime() {
 		return initEarliestTime;
@@ -48,12 +47,12 @@ public class SplunkConfiguration {
 		this.searchMode = searchMode;
 	}
 
-	public int getCount() {
-		return count;
+	public int getMaxRows() {
+		return maxRows;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setMaxRows(int maxRows) {
+		this.maxRows = maxRows;
 	}
 
 	public String getFieldList() {
@@ -86,14 +85,6 @@ public class SplunkConfiguration {
 
 	public void setLatestTime(String latestTime) {
 		this.latestTime = latestTime;
-	}
-
-	public String getSavedSearch() {
-		return savedSearch;
-	}
-
-	public void setSavedSearch(String savedSearch) {
-		this.savedSearch = savedSearch;
 	}
 
 	public int getTcpRecieverPort() {
