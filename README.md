@@ -1,7 +1,8 @@
 camel-splunk 
 ============
-This Apache Camel component can be used to publish events to Splunk see http://www.splunk.com
-Consumer for querying Splunk is not supported right now.
+This Apache Camel component can be used to publish and query events in Splunk.
+see http://www.splunk.com
+Some Splunk Consumer features has been left out right now eg. saved search, but might be added later.
 
 ## Setup Instructions
 
