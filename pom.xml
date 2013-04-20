@@ -27,6 +27,18 @@
 		<artifactId>splunk</artifactId>
 		<version>1.1.0</version>
 	</dependency>
+	<!-- dependency fix for splunk sdk since it doesn't declare it's dependencies -->
+	<dependency>
+		<groupId>org.codehaus.woodstox</groupId>
+  		<artifactId>stax2-api</artifactId>
+  		<version>3.1.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.codehaus.woodstox</groupId>
+		<artifactId>woodstox-core-asl</artifactId>
+		<version>4.1.5</version>
+	</dependency>
+	
     <!-- logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
