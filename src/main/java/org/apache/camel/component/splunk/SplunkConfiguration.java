@@ -4,190 +4,190 @@ import com.splunk.JobArgs.SearchMode;
 import com.splunk.Service;
 
 public class SplunkConfiguration {
-	public static enum WriterType {
-		stream, tcp, submit
-	}
+    public static enum WriterType {
+        stream, tcp, submit
+    }
 
-	private String host = Service.DEFAULT_HOST;
-	private int port = Service.DEFAULT_PORT;
-	private String scheme = Service.DEFAULT_SCHEME;
-	private String app;
-	private String owner;
-	private String username;
-	private String password;
-	private int connectionTimeout = 5000;
-	private String index;
-	private String sourceType;
-	private String source;
-	private int tcpRecieverPort;
-	private WriterType writerType = WriterType.stream;
-	
-	//consumer properties
-	private SearchMode searchMode  = SearchMode.NORMAL;
-	private int maxRows = 0;
-	private String fieldList;
-	private String search;
-	private String earliestTime;
-	private String latestTime;
-	private String initEarliestTime;
+    private String host = Service.DEFAULT_HOST;
+    private int port = Service.DEFAULT_PORT;
+    private String scheme = Service.DEFAULT_SCHEME;
+    private String app;
+    private String owner;
+    private String username;
+    private String password;
+    private int connectionTimeout = 5000;
+    private String index;
+    private String sourceType;
+    private String source;
+    private int tcpRecieverPort;
+    private WriterType writerType = WriterType.stream;
 
-	public String getInitEarliestTime() {
-		return initEarliestTime;
-	}
-	
-	public void setInitEarliestTime(String initEarliestTime) {
-		this.initEarliestTime = initEarliestTime;
-	}
-	
-	public SearchMode getSearchMode() {
-		return searchMode;
-	}
+    // consumer properties
+    private SearchMode searchMode = SearchMode.NORMAL;
+    private int maxRows = 0;
+    private String fieldList;
+    private String search;
+    private String earliestTime;
+    private String latestTime;
+    private String initEarliestTime;
 
-	public void setSearchMode(SearchMode searchMode) {
-		this.searchMode = searchMode;
-	}
+    public String getInitEarliestTime() {
+        return initEarliestTime;
+    }
 
-	public int getMaxRows() {
-		return maxRows;
-	}
+    public void setInitEarliestTime(String initEarliestTime) {
+        this.initEarliestTime = initEarliestTime;
+    }
 
-	public void setMaxRows(int maxRows) {
-		this.maxRows = maxRows;
-	}
+    public SearchMode getSearchMode() {
+        return searchMode;
+    }
 
-	public String getFieldList() {
-		return fieldList;
-	}
+    public void setSearchMode(SearchMode searchMode) {
+        this.searchMode = searchMode;
+    }
 
-	public void setFieldList(String fieldList) {
-		this.fieldList = fieldList;
-	}
+    public int getMaxRows() {
+        return maxRows;
+    }
 
-	public String getSearch() {
-		return search;
-	}
+    public void setMaxRows(int maxRows) {
+        this.maxRows = maxRows;
+    }
 
-	public void setSearch(String search) {
-		this.search = search;
-	}
+    public String getFieldList() {
+        return fieldList;
+    }
 
-	public String getEarliestTime() {
-		return earliestTime;
-	}
+    public void setFieldList(String fieldList) {
+        this.fieldList = fieldList;
+    }
 
-	public void setEarliestTime(String earliestTime) {
-		this.earliestTime = earliestTime;
-	}
+    public String getSearch() {
+        return search;
+    }
 
-	public String getLatestTime() {
-		return latestTime;
-	}
+    public void setSearch(String search) {
+        this.search = search;
+    }
 
-	public void setLatestTime(String latestTime) {
-		this.latestTime = latestTime;
-	}
+    public String getEarliestTime() {
+        return earliestTime;
+    }
 
-	public int getTcpRecieverPort() {
-		return tcpRecieverPort;
-	}
+    public void setEarliestTime(String earliestTime) {
+        this.earliestTime = earliestTime;
+    }
 
-	public void setTcpRecieverPort(int tcpRecieverPort) {
-		this.tcpRecieverPort = tcpRecieverPort;
-	}
+    public String getLatestTime() {
+        return latestTime;
+    }
 
-	public String getSourceType() {
-		return sourceType;
-	}
+    public void setLatestTime(String latestTime) {
+        this.latestTime = latestTime;
+    }
 
-	public void setSourceType(String sourceType) {
-		this.sourceType = sourceType;
-	}
+    public int getTcpRecieverPort() {
+        return tcpRecieverPort;
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public void setTcpRecieverPort(int tcpRecieverPort) {
+        this.tcpRecieverPort = tcpRecieverPort;
+    }
 
-	public void setSource(String source) {
-		this.source = source;
-	}
+    public String getSourceType() {
+        return sourceType;
+    }
 
-	public void setIndex(String index) {
-		this.index = index;
-	}
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
+    }
 
-	public String getIndex() {
-		return index;
-	}
+    public String getSource() {
+        return source;
+    }
 
-	public void setWriterType(WriterType writerType) {
-		this.writerType = writerType;
-	}
+    public void setSource(String source) {
+        this.source = source;
+    }
 
-	public WriterType getWriterType() {
-		return writerType;
-	}
+    public void setIndex(String index) {
+        this.index = index;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public String getIndex() {
+        return index;
+    }
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    public void setWriterType(WriterType writerType) {
+        this.writerType = writerType;
+    }
 
-	public int getPort() {
-		return port;
-	}
+    public WriterType getWriterType() {
+        return writerType;
+    }
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public String getScheme() {
-		return scheme;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public void setScheme(String scheme) {
-		this.scheme = scheme;
-	}
+    public int getPort() {
+        return port;
+    }
 
-	public String getApp() {
-		return app;
-	}
+    public void setPort(int port) {
+        this.port = port;
+    }
 
-	public void setApp(String app) {
-		this.app = app;
-	}
+    public String getScheme() {
+        return scheme;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public String getApp() {
+        return app;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setApp(String app) {
+        this.app = app;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public int getConnectionTimeout() {
-		return connectionTimeout;
-	} 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setConnectionTimeout(int timeout) {
-		this.connectionTimeout = timeout;
-	}
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int timeout) {
+        this.connectionTimeout = timeout;
+    }
 }

@@ -19,52 +19,51 @@ import org.slf4j.LoggerFactory;
  * The Splunk consumer.
  */
 public class SplunkConsumer extends ScheduledBatchPollingConsumer {
-	private final static Logger LOG = LoggerFactory.getLogger(SplunkConsumer.class);
-	private SplunkDataReader dataReader;
-	
-	public SplunkConsumer(SplunkEndpoint endpoint, Processor processor) {
-		super(endpoint, processor);
-		dataReader = new SplunkDataReader(endpoint);
-	}
+    private final static Logger LOG = LoggerFactory.getLogger(SplunkConsumer.class);
+    private SplunkDataReader dataReader;
 
-	@Override
-	protected int poll() throws Exception {
-		List<SplunkEvent> events = dataReader.read();
-		Queue<Exchange> exchanges = createExchanges(events);
-		return processBatch(CastUtils.cast(exchanges));
-	}
+    public SplunkConsumer(SplunkEndpoint endpoint, Processor processor) {
+        super(endpoint, processor);
+        dataReader = new SplunkDataReader(endpoint);
+    }
 
-	protected Queue<Exchange> createExchanges(List<SplunkEvent> splunkEvents) {
-		LOG.trace("Received {} messages in this poll", splunkEvents.size());
-		Queue<Exchange> answer = new LinkedList<Exchange>();
-		for (SplunkEvent splunkEvent : splunkEvents) {
-			Exchange exchange = getEndpoint().createExchange();
-			Message message = exchange.getIn();
-			message.setBody(splunkEvent);
-			answer.add(exchange);
-		}
-		return answer;
-	}
+    @Override
+    protected int poll() throws Exception {
+        List<SplunkEvent> events = dataReader.read();
+        Queue<Exchange> exchanges = createExchanges(events);
+        return processBatch(CastUtils.cast(exchanges));
+    }
 
-	@Override
-	public int processBatch(Queue<Object> exchanges) throws Exception {
-		int total = exchanges.size();
+    protected Queue<Exchange> createExchanges(List<SplunkEvent> splunkEvents) {
+        LOG.trace("Received {} messages in this poll", splunkEvents.size());
+        Queue<Exchange> answer = new LinkedList<Exchange>();
+        for (SplunkEvent splunkEvent : splunkEvents) {
+            Exchange exchange = getEndpoint().createExchange();
+            Message message = exchange.getIn();
+            message.setBody(splunkEvent);
+            answer.add(exchange);
+        }
+        return answer;
+    }
 
-		for (int index = 0; index < total && isBatchAllowed(); index++) {
-			Exchange exchange = ObjectHelper.cast(Exchange.class, exchanges.poll());
-			exchange.setProperty(Exchange.BATCH_INDEX, index);
-			exchange.setProperty(Exchange.BATCH_SIZE, total);
-			exchange.setProperty(Exchange.BATCH_COMPLETE, index == total - 1);
-			try {
-				LOG.trace("Processing exchange [{}]...", exchange);
-				getProcessor().process(exchange);
-			} finally {
-				if (exchange.getException() != null) {
-					getExceptionHandler().handleException("Error processing exchange", exchange,
-							exchange.getException());
-				}
-			}
-		}
-		return total;
-	}
+    @Override
+    public int processBatch(Queue<Object> exchanges) throws Exception {
+        int total = exchanges.size();
+
+        for (int index = 0; index < total && isBatchAllowed(); index++) {
+            Exchange exchange = ObjectHelper.cast(Exchange.class, exchanges.poll());
+            exchange.setProperty(Exchange.BATCH_INDEX, index);
+            exchange.setProperty(Exchange.BATCH_SIZE, total);
+            exchange.setProperty(Exchange.BATCH_COMPLETE, index == total - 1);
+            try {
+                LOG.trace("Processing exchange [{}]...", exchange);
+                getProcessor().process(exchange);
+            } finally {
+                if (exchange.getException() != null) {
+                    getExceptionHandler().handleException("Error processing exchange", exchange, exchange.getException());
+                }
+            }
+        }
+        return total;
+    }
 }

@@ -16,59 +16,59 @@ import org.slf4j.LoggerFactory;
  * The Splunk producer.
  */
 public class SplunkProducer extends DefaultProducer {
-	private static final transient Logger LOG = LoggerFactory.getLogger(SplunkProducer.class);
-	private SplunkEndpoint endpoint;
-	private DataWriter dataWriter;
+    private static final transient Logger LOG = LoggerFactory.getLogger(SplunkProducer.class);
+    private SplunkEndpoint endpoint;
+    private DataWriter dataWriter;
 
-	public SplunkProducer(SplunkEndpoint endpoint) {
-		super(endpoint);
-		this.endpoint = endpoint;
-		createWriter();
-	}
+    public SplunkProducer(SplunkEndpoint endpoint) {
+        super(endpoint);
+        this.endpoint = endpoint;
+        createWriter();
+    }
 
-	public void process(Exchange exchange) throws Exception {
-		dataWriter.write(exchange.getIn().getMandatoryBody(SplunkEvent.class));
-	}
+    public void process(Exchange exchange) throws Exception {
+        dataWriter.write(exchange.getIn().getMandatoryBody(SplunkEvent.class));
+    }
 
-	@Override
-	protected void doStart() throws Exception {
-		super.doStart();
-		dataWriter.start();
-	}
+    @Override
+    protected void doStart() throws Exception {
+        super.doStart();
+        dataWriter.start();
+    }
 
-	@Override
-	protected void doStop() throws Exception {
-		dataWriter.stop();
-		super.doStop();
-	}
+    @Override
+    protected void doStop() throws Exception {
+        dataWriter.stop();
+        super.doStop();
+    }
 
-	private void createWriter() {
-		WriterType writerType = endpoint.getConfiguration().getWriterType();
-		switch (writerType) {
-		case tcp: {
-			LOG.info("Creating TcpDataWriter");
-			dataWriter = new TcpDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
-			((TcpDataWriter) dataWriter).setPort(endpoint.getConfiguration().getTcpRecieverPort());
-			LOG.info("TcpDataWriter created for endpoint " + endpoint);
-			break;
-		}
-		case submit: {
-			LOG.info("Creating SubmitDataWriter");
-			dataWriter = new SubmitDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
-			((SubmitDataWriter) dataWriter).setIndex(endpoint.getConfiguration().getIndex());
-			LOG.info("SubmitDataWriter created for endpoint " + endpoint);
-			break;
-		}
-		case stream: {
-			LOG.info("Creating StreamDataWriter");
-			dataWriter = new StreamDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
-			((StreamDataWriter) dataWriter).setIndex(endpoint.getConfiguration().getIndex());
-			LOG.info("StreamDataWriter created for endpoint " + endpoint);
-			break;
-		}
-		default:
-			throw new RuntimeCamelException("Unknown writerType : " + writerType);
-		}
-	}
+    private void createWriter() {
+        WriterType writerType = endpoint.getConfiguration().getWriterType();
+        switch (writerType) {
+        case tcp: {
+            LOG.info("Creating TcpDataWriter");
+            dataWriter = new TcpDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
+            ((TcpDataWriter)dataWriter).setPort(endpoint.getConfiguration().getTcpRecieverPort());
+            LOG.info("TcpDataWriter created for endpoint " + endpoint);
+            break;
+        }
+        case submit: {
+            LOG.info("Creating SubmitDataWriter");
+            dataWriter = new SubmitDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
+            ((SubmitDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
+            LOG.info("SubmitDataWriter created for endpoint " + endpoint);
+            break;
+        }
+        case stream: {
+            LOG.info("Creating StreamDataWriter");
+            dataWriter = new StreamDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
+            ((StreamDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
+            LOG.info("StreamDataWriter created for endpoint " + endpoint);
+            break;
+        }
+        default:
+            throw new RuntimeCamelException("Unknown writerType : " + writerType);
+        }
+    }
 
 }

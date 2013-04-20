@@ -12,29 +12,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FileReadTimeMarker implements ReadTimeMarker {
-	private final Logger LOG = LoggerFactory.getLogger(FileReadTimeMarker.class);
-	
-	private File fileStore;
-	
-	public FileReadTimeMarker(String fileName) {
-		fileStore = new File(fileName);
-	}
-	
-	@Override
-	public String readLatestMark() {
+    private final Logger LOG = LoggerFactory.getLogger(FileReadTimeMarker.class);
+
+    private File fileStore;
+
+    public FileReadTimeMarker(String fileName) {
+        fileStore = new File(fileName);
+    }
+
+    @Override
+    public String readLatestMark() {
         FileInputStream fis = null;
         String answer = null;
         try {
             // create store if missing
             if (fileStore.exists()) {
-            	// read the new marker
-            	fis = new FileInputStream(fileStore);
-            	StringBuffer fileContent = new StringBuffer("");
-            	byte[] buffer = new byte[1024];
-            	while (fis.read(buffer) != -1) {
-            	    fileContent.append(new String(buffer));
-            	}
-            	answer = fileContent.toString();
+                // read the new marker
+                fis = new FileInputStream(fileStore);
+                StringBuffer fileContent = new StringBuffer("");
+                byte[] buffer = new byte[1024];
+                while (fis.read(buffer) != -1) {
+                    fileContent.append(new String(buffer));
+                }
+                answer = fileContent.toString();
             }
             return answer;
         } catch (IOException e) {
@@ -42,11 +42,11 @@ public class FileReadTimeMarker implements ReadTimeMarker {
         } finally {
             IOHelper.close(fis, "Reading new marker", LOG);
         }
-	}
+    }
 
-	@Override
-	public void writeLatestMark(String marker) {
-		LOG.debug("Writing {} to filemarker filestore: {}", marker, fileStore);
+    @Override
+    public void writeLatestMark(String marker) {
+        LOG.debug("Writing {} to filemarker filestore: {}", marker, fileStore);
         FileOutputStream fos = null;
         try {
             // create store if missing
@@ -61,6 +61,6 @@ public class FileReadTimeMarker implements ReadTimeMarker {
         } finally {
             IOHelper.close(fos, "Writing new marker", LOG);
         }
-	}
+    }
 
 }

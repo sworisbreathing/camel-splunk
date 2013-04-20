@@ -12,34 +12,34 @@ import com.splunk.Service;
 
 public class StreamDataWriter extends SplunkDataWriter {
 
-	private String index;
+    private String index;
 
-	public StreamDataWriter(Service service, Args args) {
-		super(service, args);
-	}
+    public StreamDataWriter(Service service, Args args) {
+        super(service, args);
+    }
 
-	public void setIndex(String index) {
-		this.index = index;
-	}
+    public void setIndex(String index) {
+        this.index = index;
+    }
 
-	@Override
-	protected Socket createSocket(Service service) throws IOException {
-		Index indexObject = null;
-		Receiver receiver = null;
-		Socket socket = null;
+    @Override
+    protected Socket createSocket(Service service) throws IOException {
+        Index indexObject = null;
+        Receiver receiver = null;
+        Socket socket = null;
 
-		if (index != null) {
-			indexObject = service.getIndexes().get(index);
-			if (indexObject == null) {
-				throw new RuntimeCamelException(String.format("cannot find index [%s]", index));
-			}
-			socket = indexObject.attach(args);
-		} else {
-			receiver = service.getReceiver();
-			socket = receiver.attach(args);
-		}
-		logger.trace(String.format("created a socket on %s", socket.getRemoteSocketAddress()));
-		return socket;
-	}
+        if (index != null) {
+            indexObject = service.getIndexes().get(index);
+            if (indexObject == null) {
+                throw new RuntimeCamelException(String.format("cannot find index [%s]", index));
+            }
+            socket = indexObject.attach(args);
+        } else {
+            receiver = service.getReceiver();
+            socket = receiver.attach(args);
+        }
+        logger.trace(String.format("created a socket on %s", socket.getRemoteSocketAddress()));
+        return socket;
+    }
 
 }
