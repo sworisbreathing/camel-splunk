@@ -33,7 +33,7 @@ public abstract class SplunkDataWriter implements DataWriter {
 
     protected void doWrite(SplunkEvent event, Socket socket) throws IOException {
         OutputStream ostream = socket.getOutputStream();
-        Writer writer = new OutputStreamWriter(ostream, "UTF-8");
+        Writer writer = new OutputStreamWriter(ostream, "UTF8");
         writer.write(event.toString());
         writer.flush();
     }

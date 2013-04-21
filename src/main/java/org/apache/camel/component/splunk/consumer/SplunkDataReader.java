@@ -17,7 +17,7 @@ import com.splunk.Args;
 import com.splunk.Job;
 import com.splunk.JobArgs.SearchMode;
 import com.splunk.ResultsReader;
-import com.splunk.ResultsReaderXml;
+import com.splunk.ResultsReaderJson;
 import com.splunk.Service;
 
 public class SplunkDataReader {
@@ -212,10 +212,10 @@ public class SplunkDataReader {
         if (getMaxRows() == 0 || total < getMaxRows()) {
             InputStream stream = null;
             Args outputArgs = new Args();
-            outputArgs.put("output_mode", "xml");
+            outputArgs.put("output_mode", "json");
             stream = job.getResults(outputArgs);
 
-            resultsReader = new ResultsReaderXml(stream);
+            resultsReader = new ResultsReaderJson(stream);
             while ((data = resultsReader.getNextEvent()) != null) {
                 splunkData = new SplunkEvent(data);
                 result.add(splunkData);
@@ -225,11 +225,11 @@ public class SplunkDataReader {
             while (offset < total) {
                 InputStream stream = null;
                 Args outputArgs = new Args();
-                outputArgs.put("output_mode", "xml");
+                outputArgs.put("output_mode", "json");
                 outputArgs.put("count", getMaxRows());
                 outputArgs.put("offset", offset);
                 stream = job.getResults(outputArgs);
-                resultsReader = new ResultsReaderXml(stream);
+                resultsReader = new ResultsReaderJson(stream);
                 while ((data = resultsReader.getNextEvent()) != null) {
                     splunkData = new SplunkEvent(data);
                     result.add(splunkData);
