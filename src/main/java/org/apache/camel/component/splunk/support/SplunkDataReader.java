@@ -1,4 +1,4 @@
-package org.apache.camel.component.splunk.consumer;
+package org.apache.camel.component.splunk.support;
 
 import java.io.InputStream;
 import java.text.DateFormat;

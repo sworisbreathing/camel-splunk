@@ -1,4 +1,4 @@
-package org.apache.camel.component.splunk.producer;
+package org.apache.camel.component.splunk.support;
 
 import java.io.IOException;
 import java.io.OutputStream;
