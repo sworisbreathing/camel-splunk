@@ -1,11 +1,24 @@
 package org.apache.camel.component.splunk;
 
-import com.splunk.JobArgs.SearchMode;
 import com.splunk.Service;
 
 public class SplunkConfiguration {
     public static enum WriterType {
         stream, tcp, submit
+    }
+
+    public static enum SearchMode {
+        NORMAL("normal"), REALTIME("realtime"), SAVEDSEARCH("savedsearch");
+
+        private String value;
+
+        private SearchMode(String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return this.value;
+        }
     }
 
     private String host = Service.DEFAULT_HOST;
@@ -27,6 +40,7 @@ public class SplunkConfiguration {
     private int maxRows = 0;
     private String fieldList;
     private String search;
+    private String savedSearch;
     private String earliestTime;
     private String latestTime;
     private String initEarliestTime;
@@ -189,5 +203,13 @@ public class SplunkConfiguration {
 
     public void setConnectionTimeout(int timeout) {
         this.connectionTimeout = timeout;
+    }
+
+    public String getSavedSearch() {
+        return this.savedSearch;
+    }
+
+    public void setSavedSearch(String savedSearch) {
+        this.savedSearch = savedSearch;
     }
 }

@@ -7,17 +7,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.camel.component.splunk.SplunkConfiguration.SearchMode;
 import org.apache.camel.component.splunk.SplunkEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
+import org.apache.camel.util.IOHelper;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.log4j.Logger;
 
 import com.splunk.Args;
 import com.splunk.Job;
-import com.splunk.JobArgs.SearchMode;
 import com.splunk.ResultsReader;
 import com.splunk.ResultsReaderJson;
+import com.splunk.SavedSearch;
+import com.splunk.SavedSearchCollection;
 import com.splunk.Service;
 
 public class SplunkDataReader {
@@ -63,6 +67,10 @@ public class SplunkDataReader {
         return endpoint.getConfiguration().getInitEarliestTime();
     }
 
+    private String getSavedSearch() {
+        return endpoint.getConfiguration().getSavedSearch();
+    }
+
     public List<SplunkEvent> read() throws Exception {
         logger.debug("mode:" + getSearchMode());
         switch (getSearchMode()) {
@@ -71,6 +79,9 @@ public class SplunkDataReader {
         }
         case REALTIME: {
             return realtimeSearch();
+        }
+        case SAVEDSEARCH: {
+            return savedSearch();
         }
         }
         throw new RuntimeException("Unknown search mode " + getSearchMode());
@@ -172,6 +183,49 @@ public class SplunkDataReader {
 
     }
 
+    private List<SplunkEvent> savedSearch() throws Exception {
+        logger.debug("saved search start");
+
+        Args queryArgs = new Args();
+        queryArgs.put("app", "search");
+        if (ObjectHelper.isNotEmpty(endpoint.getConfiguration().getOwner())) {
+            queryArgs.put("owner", endpoint.getConfiguration().getOwner());
+        }
+        if (ObjectHelper.isNotEmpty(endpoint.getConfiguration().getApp())) {
+            queryArgs.put("app", endpoint.getConfiguration().getApp());
+        }
+
+        Calendar startTime = Calendar.getInstance();
+
+        SavedSearch search = null;
+        Job job = null;
+        String latestTime = getLatestTime(startTime, false);
+        String earliestTime = getEarliestTime(startTime, false);
+
+        Service service = endpoint.getService();
+        SavedSearchCollection savedSearches = service.getSavedSearches(queryArgs);
+        for (SavedSearch s : savedSearches.values()) {
+            if (s.getName().equals(getSavedSearch())) {
+                search = s;
+                break;
+            }
+        }
+        if (search != null) {
+            Map<String, String> args = new HashMap<String, String>();
+            args.put("force_dispatch", "true");
+            args.put("dispatch.earliest_time", earliestTime);
+            args.put("dispatch.latest_time", latestTime);
+            job = search.dispatch(args);
+        }
+        while (!job.isDone()) {
+            Thread.sleep(2000);
+        }
+        List<SplunkEvent> data = extractData(job);
+        this.lastSuccessfulReadTime = startTime;
+        return data;
+
+    }
+
     private List<SplunkEvent> nonBlockingSearch() throws Exception {
         logger.debug("non block search start");
 
@@ -206,7 +260,7 @@ public class SplunkDataReader {
         List<SplunkEvent> result = new ArrayList<SplunkEvent>();
         HashMap<String, String> data;
         SplunkEvent splunkData;
-        ResultsReader resultsReader;
+        ResultsReader resultsReader = null;
         int total = job.getResultCount();
 
         if (getMaxRows() == 0 || total < getMaxRows()) {
@@ -220,6 +274,7 @@ public class SplunkDataReader {
                 splunkData = new SplunkEvent(data);
                 result.add(splunkData);
             }
+            IOHelper.close(stream);
         } else {
             int offset = 0;
             while (offset < total) {
@@ -235,7 +290,11 @@ public class SplunkDataReader {
                     result.add(splunkData);
                 }
                 offset += getMaxRows();
+                IOHelper.close(stream);
             }
+        }
+        if (resultsReader != null) {
+            resultsReader.close();
         }
         return result;
     }

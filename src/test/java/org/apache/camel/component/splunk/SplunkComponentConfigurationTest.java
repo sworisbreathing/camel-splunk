@@ -1,9 +1,8 @@
 package org.apache.camel.component.splunk;
 
+import org.apache.camel.component.splunk.SplunkConfiguration.SearchMode;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
-
-import com.splunk.JobArgs.SearchMode;
 
 public class SplunkComponentConfigurationTest extends CamelTestSupport {
     @Test

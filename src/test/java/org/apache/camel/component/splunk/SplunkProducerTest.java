@@ -3,20 +3,11 @@ package org.apache.camel.component.splunk;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
-import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore("run manually since it requires a running local splunk server")
-public class SplunkProducerTest extends CamelTestSupport {
-    // TEST WILL RUN ON SPLUNK DEFAULT LOCALHOST+PORT
-    // the Splunk username/pw created when Splunk was initialized during your
-    // login.
-    private final String SPLUNK_USERNAME = "admin";
-    private final String SPLUNK_PASSWORD = "preben1212";
-
-    // Index name created in Splunk for integration test
-    private final String INDEX = "junit";
+public class SplunkProducerTest extends SplunkTest {
 
     // Splunk tcp reciever port configured in Splunk
     private final String TCP_RECIEVER_PORT = "9997";
