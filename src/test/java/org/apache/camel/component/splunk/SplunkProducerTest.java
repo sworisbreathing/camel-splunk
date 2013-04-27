@@ -3,10 +3,8 @@ package org.apache.camel.component.splunk;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("run manually since it requires a running local splunk server")
 public class SplunkProducerTest extends SplunkTest {
 
     // Splunk tcp reciever port configured in Splunk
@@ -43,7 +41,7 @@ public class SplunkProducerTest extends SplunkTest {
         SplunkEvent splunkEvent = new SplunkEvent();
         splunkEvent.addPair("key1", "value1");
         splunkEvent.addPair("key2", "value2");
-        splunkEvent.addPair("key3", "value1");
+        splunkEvent.addPair("key3", "value3");
         template.sendBody("direct:tcp", splunkEvent);
         assertMockEndpointsSatisfied();
     }
@@ -52,14 +50,14 @@ public class SplunkProducerTest extends SplunkTest {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("direct:stream").to("splunk://stream1?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&writerType=stream" + "&index=" + INDEX
+                from("direct:stream").to("splunk://stream?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&index=" + INDEX
                                              + "&sourceType=StreamSourceType&source=StreamSource").to("mock:stream-result");
 
-                from("direct:submit").to("splunk://submit1?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&writerType=submit&index=" + INDEX
-                                             + "&sourceType=testSource&source=test").to("mock:submitresult");
+                from("direct:submit").to("splunk://submit?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&index=" + INDEX + "&sourceType=testSource&source=test")
+                    .to("mock:submitresult");
 
-                from("direct:tcp").to("splunk://tcp1?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&writerType=tcp&tcpRecieverPort=" + TCP_RECIEVER_PORT
-                                          + "&index=" + INDEX + "&sourceType=testSource&source=test").to("mock:tcpresult");
+                from("direct:tcp").to("splunk://tcp?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&tcpRecieverPort=" + TCP_RECIEVER_PORT + "&index=" + INDEX
+                                          + "&sourceType=testSource&source=test").to("mock:tcpresult");
             }
         };
     }

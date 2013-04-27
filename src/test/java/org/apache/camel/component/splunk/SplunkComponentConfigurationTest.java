@@ -1,6 +1,5 @@
 package org.apache.camel.component.splunk;
 
-import org.apache.camel.component.splunk.SplunkConfiguration.SearchMode;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
 
@@ -22,9 +21,8 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
     public void createProducerEndpointWithMaximalConfiguration() throws Exception {
         SplunkComponent component = new SplunkComponent();
         component.setCamelContext(context);
-        SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://test?username=test&password=pw&host=myhost&port=3333&"
-                                                                           + "writerType=tcp&tcpRecieverPort=4444&index=myindex&sourceType=testSource&"
-                                                                           + "source=test&owner=me&app=fantasticapp");
+        SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://tcp?username=test&password=pw&host=myhost&port=3333&"
+                                                                           + "tcpRecieverPort=4444&index=myindex&sourceType=testSource&" + "source=test&owner=me&app=fantasticapp");
         assertEquals("myhost", endpoint.getConfiguration().getHost());
         assertEquals(3333, endpoint.getConfiguration().getPort());
         assertEquals("test", endpoint.getConfiguration().getUsername());
@@ -41,7 +39,7 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
     public void createConsumerEndpointWithMinimalConfiguration() throws Exception {
         SplunkComponent component = new SplunkComponent();
         component.setCamelContext(context);
-        SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://test?username=test&" + "password=pw&search=Splunk search query goes here");
+        SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://realtime?username=test&" + "password=pw&search=Splunk search query goes here");
         assertEquals("localhost", endpoint.getConfiguration().getHost());
         assertEquals(8089, endpoint.getConfiguration().getPort());
         assertEquals("test", endpoint.getConfiguration().getUsername());
@@ -49,14 +47,13 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
         assertEquals("https", endpoint.getConfiguration().getScheme());
         assertEquals(5000, endpoint.getConfiguration().getConnectionTimeout());
         assertEquals("Splunk search query goes here", endpoint.getConfiguration().getSearch());
-        assertEquals(SearchMode.NORMAL, endpoint.getConfiguration().getSearchMode());
     }
 
     @Test
     public void createConsumerEndpointWithMaximalConfiguration() throws Exception {
         SplunkComponent component = new SplunkComponent();
         component.setCamelContext(context);
-        SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://test?username=test&password=pw&host=myhost&port=3333&delay=10s&"
+        SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://normal?username=test&password=pw&host=myhost&port=3333&delay=10s&"
                                                                            + "search=Splunk search query goes here&initEarliestTime=-1d"
                                                                            + "&latestTime=now&fieldList=field1,field2&maxRows=10&" + "owner=me&app=fantasticapp");
         assertEquals("myhost", endpoint.getConfiguration().getHost());

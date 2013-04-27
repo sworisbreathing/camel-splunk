@@ -6,11 +6,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("run manually since it requires a running local splunk server")
-public class SavesSearchConsumerTest extends SplunkTest {
+public class RealTimeSearchTest extends SplunkTest {
 
     // before run there should be created a saved search 'junit' in splunk
 
@@ -32,11 +30,11 @@ public class SavesSearchConsumerTest extends SplunkTest {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("direct:submit").to("splunk://submit1?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&writerType=submit&index=" + INDEX
-                                             + "&sourceType=testSource&source=test").to("mock:submit-result");
+                from("direct:submit").to("splunk://submit?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&index=" + INDEX + "&sourceType=testSource&source=test")
+                    .to("mock:submit-result");
                 from(
-                     "splunk://savessearch?delay=5s&username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&searchMode=SAVEDSEARCH&initEarliestTime=-10s&latestTime=now"
-                         + "&savedSearch=junit").to("mock:search-saved");
+                     "splunk://realtime?delay=5s&username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&initEarliestTime=rt-30s&latestTime=rt" + "&search=search index="
+                         + INDEX + " sourcetype=testSource").to("mock:search-saved");
             }
         };
     }

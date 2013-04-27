@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.camel.component.splunk.SplunkConfiguration.SearchMode;
+import org.apache.camel.component.splunk.ConsumerType;
 import org.apache.camel.component.splunk.SplunkEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.util.IOHelper;
@@ -35,12 +35,11 @@ public class SplunkDataReader {
 
     private SplunkEndpoint endpoint;
 
-    public SplunkDataReader(SplunkEndpoint endpoint) {
-        this.endpoint = endpoint;
-    }
+    private ConsumerType consumerType;
 
-    public SearchMode getSearchMode() {
-        return endpoint.getConfiguration().getSearchMode();
+    public SplunkDataReader(SplunkEndpoint endpoint, ConsumerType consumerType) {
+        this.endpoint = endpoint;
+        this.consumerType = consumerType;
     }
 
     public int getMaxRows() {
@@ -72,8 +71,7 @@ public class SplunkDataReader {
     }
 
     public List<SplunkEvent> read() throws Exception {
-        logger.debug("mode:" + getSearchMode());
-        switch (getSearchMode()) {
+        switch (consumerType) {
         case NORMAL: {
             return nonBlockingSearch();
         }
@@ -83,8 +81,11 @@ public class SplunkDataReader {
         case SAVEDSEARCH: {
             return savedSearch();
         }
+        case UNKNOWN: {
+            throw new RuntimeException("Unknown search mode " + consumerType);
         }
-        throw new RuntimeException("Unknown search mode " + getSearchMode());
+        }
+        throw new RuntimeException("Unknown search mode " + consumerType);
     }
 
     /**

@@ -3,23 +3,6 @@ package org.apache.camel.component.splunk;
 import com.splunk.Service;
 
 public class SplunkConfiguration {
-    public static enum WriterType {
-        stream, tcp, submit
-    }
-
-    public static enum SearchMode {
-        NORMAL("normal"), REALTIME("realtime"), SAVEDSEARCH("savedsearch");
-
-        private String value;
-
-        private SearchMode(String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return this.value;
-        }
-    }
 
     private String host = Service.DEFAULT_HOST;
     private int port = Service.DEFAULT_PORT;
@@ -33,10 +16,8 @@ public class SplunkConfiguration {
     private String sourceType;
     private String source;
     private int tcpRecieverPort;
-    private WriterType writerType = WriterType.stream;
 
     // consumer properties
-    private SearchMode searchMode = SearchMode.NORMAL;
     private int maxRows = 0;
     private String fieldList;
     private String search;
@@ -51,14 +32,6 @@ public class SplunkConfiguration {
 
     public void setInitEarliestTime(String initEarliestTime) {
         this.initEarliestTime = initEarliestTime;
-    }
-
-    public SearchMode getSearchMode() {
-        return searchMode;
-    }
-
-    public void setSearchMode(SearchMode searchMode) {
-        this.searchMode = searchMode;
     }
 
     public int getMaxRows() {
@@ -131,14 +104,6 @@ public class SplunkConfiguration {
 
     public String getIndex() {
         return index;
-    }
-
-    public void setWriterType(WriterType writerType) {
-        this.writerType = writerType;
-    }
-
-    public WriterType getWriterType() {
-        return writerType;
     }
 
     public String getHost() {

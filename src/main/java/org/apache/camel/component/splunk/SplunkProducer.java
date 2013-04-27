@@ -1,8 +1,6 @@
 package org.apache.camel.component.splunk;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.component.splunk.SplunkConfiguration.WriterType;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.component.splunk.support.DataWriter;
 import org.apache.camel.component.splunk.support.StreamDataWriter;
@@ -20,10 +18,10 @@ public class SplunkProducer extends DefaultProducer {
     private SplunkEndpoint endpoint;
     private DataWriter dataWriter;
 
-    public SplunkProducer(SplunkEndpoint endpoint) {
+    public SplunkProducer(SplunkEndpoint endpoint, ProducerType producerType) {
         super(endpoint);
         this.endpoint = endpoint;
-        createWriter();
+        createWriter(producerType);
     }
 
     public void process(Exchange exchange) throws Exception {
@@ -42,32 +40,32 @@ public class SplunkProducer extends DefaultProducer {
         super.doStop();
     }
 
-    private void createWriter() {
-        WriterType writerType = endpoint.getConfiguration().getWriterType();
-        switch (writerType) {
-        case tcp: {
+    private void createWriter(ProducerType producerType) {
+        switch (producerType) {
+        case TCP: {
             LOG.info("Creating TcpDataWriter");
             dataWriter = new TcpDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
             ((TcpDataWriter)dataWriter).setPort(endpoint.getConfiguration().getTcpRecieverPort());
             LOG.info("TcpDataWriter created for endpoint " + endpoint);
             break;
         }
-        case submit: {
+        case SUBMIT: {
             LOG.info("Creating SubmitDataWriter");
             dataWriter = new SubmitDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
             ((SubmitDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
             LOG.info("SubmitDataWriter created for endpoint " + endpoint);
             break;
         }
-        case stream: {
+        case STREAM: {
             LOG.info("Creating StreamDataWriter");
             dataWriter = new StreamDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
             ((StreamDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
             LOG.info("StreamDataWriter created for endpoint " + endpoint);
             break;
         }
-        default:
-            throw new RuntimeCamelException("Unknown writerType : " + writerType);
+        case UNKNOWN: {
+            throw new RuntimeException("unknown producerType");
+        }
         }
     }
 

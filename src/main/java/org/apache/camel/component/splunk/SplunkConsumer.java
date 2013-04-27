@@ -22,9 +22,9 @@ public class SplunkConsumer extends ScheduledBatchPollingConsumer {
     private final static Logger LOG = LoggerFactory.getLogger(SplunkConsumer.class);
     private SplunkDataReader dataReader;
 
-    public SplunkConsumer(SplunkEndpoint endpoint, Processor processor) {
+    public SplunkConsumer(SplunkEndpoint endpoint, Processor processor, ConsumerType consumerType) {
         super(endpoint, processor);
-        dataReader = new SplunkDataReader(endpoint);
+        dataReader = new SplunkDataReader(endpoint, consumerType);
     }
 
     @Override

@@ -20,7 +20,32 @@ Some search features has been left out right now eg. saved search, but might be 
 
 Uri format:
 ===========
-	splunk://somename[?options]
+	splunk://[endpoint]?[options]
+
+Producer endpoints:
+===================
+<table>
+  <thead>
+    <th>Endpoint</th>
+    <th>Body type</th>
+    <th>Notice</th>
+  </thead>
+  <tr>
+    <td>stream</td>
+    <td>SplunkEvent</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>submit</td>
+    <td>SplunkEvent</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>tcp</td>
+    <td>SplunkEvent</td>
+    <td></td>
+  </tr>
+</table>
 
 URI options:
 ============
@@ -84,12 +109,6 @@ URI options:
     <td>0</td>
     <td>Producer</td>
     <td>Splunk tcp reciever port when using tcp connection</td>
-  </tr>
-  <tr>
-    <th>writerType</th>
-    <td>stream</td>
-    <td>Producer</td>
-    <td>Splunk writer type either stream, tcp or submit</td>
   </tr>
   <tr>
     <th>searchMode</th>
