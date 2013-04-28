@@ -75,6 +75,9 @@ public class SplunkDataReader {
         case NORMAL: {
             return nonBlockingSearch();
         }
+        case REALTIME: {
+            return realtimeSearch();
+        }
         case SAVEDSEARCH: {
             return savedSearch();
         }
@@ -97,9 +100,10 @@ public class SplunkDataReader {
         String result = null;
         if (realtime) {
             result = calculateEarliestTimeForRealTime(startTime);
+        } else {
+            DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+            result = df.format(lastSuccessfulReadTime.getTime());
         }
-        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-        result = df.format(lastSuccessfulReadTime.getTime());
         return result;
     }
 
@@ -171,16 +175,6 @@ public class SplunkDataReader {
         return eTime;
     }
 
-    private List<SplunkEvent> runQuery(Args queryArgs) throws Exception {
-        Service service = endpoint.getService();
-        Job job = service.getJobs().create(getSearch(), queryArgs);
-        while (!job.isDone()) {
-            Thread.sleep(2000);
-        }
-        return extractData(job);
-
-    }
-
     private List<SplunkEvent> savedSearch() throws Exception {
         logger.debug("saved search start");
 
@@ -218,7 +212,7 @@ public class SplunkDataReader {
         while (!job.isDone()) {
             Thread.sleep(2000);
         }
-        List<SplunkEvent> data = extractData(job);
+        List<SplunkEvent> data = extractData(job, false);
         this.lastSuccessfulReadTime = startTime;
         return data;
 
@@ -232,23 +226,64 @@ public class SplunkDataReader {
         Calendar startTime = Calendar.getInstance();
         populateArgs(queryArgs, startTime, false);
 
-        List<SplunkEvent> data = runQuery(queryArgs);
+        List<SplunkEvent> data = runQuery(queryArgs, false);
         lastSuccessfulReadTime = startTime;
         return data;
     }
 
-    private List<SplunkEvent> extractData(Job job) throws Exception {
+    /**
+     * @return
+     * @throws Exception
+     */
+    private List<SplunkEvent> realtimeSearch() throws Exception {
+        logger.debug("realtime search start");
+
+        Args queryArgs = new Args();
+        // queryArgs.put("exec_mode", "normal");
+        queryArgs.put("search_mode", "realtime");
+        Calendar startTime = Calendar.getInstance();
+        populateArgs(queryArgs, startTime, true);
+
+        List<SplunkEvent> data = runQuery(queryArgs, true);
+        lastSuccessfulReadTime = startTime;
+        return data;
+    }
+
+    private List<SplunkEvent> runQuery(Args queryArgs, boolean realtime) throws Exception {
+        Service service = endpoint.getService();
+        Job job = service.getJobs().create(getSearch(), queryArgs);
+        if (realtime) {
+            while (!job.isReady()) {
+                Thread.sleep(2000);
+            }
+        } else {
+            while (!job.isDone()) {
+                Thread.sleep(2000);
+            }
+        }
+        return extractData(job, realtime);
+    }
+
+    private List<SplunkEvent> extractData(Job job, boolean realtime) throws Exception {
         List<SplunkEvent> result = new ArrayList<SplunkEvent>();
         HashMap<String, String> data;
         SplunkEvent splunkData;
         ResultsReader resultsReader = null;
-        int total = job.getResultCount();
-
+        int total = 0;
+        if (realtime) {
+            // total = job.getResultPreviewCount();
+        } else {
+            total = job.getResultCount();
+        }
         if (getMaxRows() == 0 || total < getMaxRows()) {
             InputStream stream = null;
             Args outputArgs = new Args();
             outputArgs.put("output_mode", "xml");
-            stream = job.getResults(outputArgs);
+            if (realtime) {
+                stream = job.getResultsPreview(outputArgs);
+            } else {
+                stream = job.getResults(outputArgs);
+            }
 
             resultsReader = new ResultsReaderXml(stream);
             while ((data = resultsReader.getNextEvent()) != null) {
@@ -264,7 +299,11 @@ public class SplunkDataReader {
                 outputArgs.put("output_mode", "xml");
                 outputArgs.put("count", getMaxRows());
                 outputArgs.put("offset", offset);
-                stream = job.getResults(outputArgs);
+                if (realtime) {
+                    stream = job.getResultsPreview(outputArgs);
+                } else {
+                    stream = job.getResults(outputArgs);
+                }
                 resultsReader = new ResultsReaderXml(stream);
                 while ((data = resultsReader.getNextEvent()) != null) {
                     splunkData = new SplunkEvent(data);
