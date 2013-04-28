@@ -14,7 +14,6 @@ import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.ScheduledPollEndpoint;
 
-import com.splunk.Args;
 import com.splunk.Service;
 
 /**
@@ -106,17 +105,6 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
         } catch (Exception e) {
             throw new RuntimeException(String.format("could not connect to Splunk Server @ %s:%d - %s", configuration.getHost(), configuration.getPort(), e.getMessage()));
         }
-    }
-
-    public Args buildSplunkArgs() {
-        Args args = new Args();
-        if (configuration.getSourceType() != null) {
-            args.put("sourcetype", configuration.getSourceType());
-        }
-        if (configuration.getSource() != null) {
-            args.put("source", configuration.getSource());
-        }
-        return args;
     }
 
     private static String[] splitUri(String uri) {

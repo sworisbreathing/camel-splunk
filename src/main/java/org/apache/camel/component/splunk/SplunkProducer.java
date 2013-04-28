@@ -10,6 +10,8 @@ import org.apache.camel.impl.DefaultProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.splunk.Args;
+
 /**
  * The Splunk producer.
  */
@@ -44,21 +46,21 @@ public class SplunkProducer extends DefaultProducer {
         switch (producerType) {
         case TCP: {
             LOG.info("Creating TcpDataWriter");
-            dataWriter = new TcpDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
+            dataWriter = new TcpDataWriter(endpoint.getService(), buildSplunkArgs());
             ((TcpDataWriter)dataWriter).setPort(endpoint.getConfiguration().getTcpRecieverPort());
             LOG.info("TcpDataWriter created for endpoint " + endpoint);
             break;
         }
         case SUBMIT: {
             LOG.info("Creating SubmitDataWriter");
-            dataWriter = new SubmitDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
+            dataWriter = new SubmitDataWriter(endpoint.getService(), buildSplunkArgs());
             ((SubmitDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
             LOG.info("SubmitDataWriter created for endpoint " + endpoint);
             break;
         }
         case STREAM: {
             LOG.info("Creating StreamDataWriter");
-            dataWriter = new StreamDataWriter(endpoint.getService(), endpoint.buildSplunkArgs());
+            dataWriter = new StreamDataWriter(endpoint.getService(), buildSplunkArgs());
             ((StreamDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
             LOG.info("StreamDataWriter created for endpoint " + endpoint);
             break;
@@ -67,6 +69,17 @@ public class SplunkProducer extends DefaultProducer {
             throw new RuntimeException("unknown producerType");
         }
         }
+    }
+
+    private Args buildSplunkArgs() {
+        Args args = new Args();
+        if (endpoint.getConfiguration().getSourceType() != null) {
+            args.put("sourcetype", endpoint.getConfiguration().getSourceType());
+        }
+        if (endpoint.getConfiguration().getSource() != null) {
+            args.put("source", endpoint.getConfiguration().getSource());
+        }
+        return args;
     }
 
 }
