@@ -6,8 +6,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("run manually since it requires a running local splunk server")
 public class NormalSearchTest extends SplunkTest {
     @Test
     public void testSearch() throws Exception {
