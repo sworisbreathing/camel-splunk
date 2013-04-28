@@ -41,6 +41,9 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
     }
 
     public Consumer createConsumer(Processor processor) throws Exception {
+        if (configuration.getInitEarliestTime() == null) {
+            throw new IllegalArgumentException("Required initialEarliestTime option could not be found");
+        }
         String[] uriSplit = splitUri(getEndpointUri());
         if (uriSplit.length > 0) {
             ConsumerType consumerType = ConsumerType.fromUri(uriSplit[0]);
@@ -48,7 +51,7 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
             configureConsumer(consumer);
             return consumer;
         }
-        throw new IllegalArgumentException("Cannot create any consumerr with uri " + getEndpointUri() + ". A consumer type was not provided (or an incorrect pairing was used).");
+        throw new IllegalArgumentException("Cannot create any consumer with uri " + getEndpointUri() + ". A consumer type was not provided (or an incorrect pairing was used).");
     }
 
     public boolean isSingleton() {

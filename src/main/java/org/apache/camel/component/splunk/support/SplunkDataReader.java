@@ -81,11 +81,10 @@ public class SplunkDataReader {
         case SAVEDSEARCH: {
             return savedSearch();
         }
-        case UNKNOWN: {
+        default: {
             throw new RuntimeException("Unknown search mode " + consumerType);
         }
         }
-        throw new RuntimeException("Unknown search mode " + consumerType);
     }
 
     /**

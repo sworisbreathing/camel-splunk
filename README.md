@@ -27,25 +27,44 @@ Producer endpoints:
 <table>
   <thead>
     <th>Endpoint</th>
-    <th>Body type</th>
-    <th>Notice</th>
+    <th>Description</th>
   </thead>
   <tr>
     <td>stream</td>
-    <td>SplunkEvent</td>
-    <td></td>
+    <td>Splunk stream mode.</td>
   </tr>
   <tr>
     <td>submit</td>
-    <td>SplunkEvent</td>
-    <td></td>
+    <td>Splunk submit mode.</td>
   </tr>
   <tr>
     <td>tcp</td>
-    <td>SplunkEvent</td>
-    <td></td>
+    <td>Splunk tcp mode. Requires a open receiver port in Splunk.</td>
   </tr>
 </table>
+
+
+Consumer endpoints:
+===================
+<table>
+  <thead>
+    <th>Endpoint</th>
+    <th>Description</th>
+  </thead>
+  <tr>
+    <td>normal</td>
+    <td>Performs normal search and requires a search query in the search option.</td>
+  </tr>
+  <tr>
+    <td>realtime</td>
+    <td>Performs realtime search in Splunk and requires a search query in the search option.</td>
+  </tr>
+  <tr>
+    <td>savedsearch</td>
+    <td>Performs search based on a search query saved in splunk and requires the name of the query in the savedSearch option.</td>
+  </tr>
+</table>
+
 
 URI options:
 ============
@@ -111,16 +130,28 @@ URI options:
     <td>Splunk tcp reciever port when using tcp connection</td>
   </tr>
   <tr>
-    <th>searchMode</th>
-    <td>normal</td>
+    <th>initEarliestTime</th>
+    <td>null</td>
     <td>Consumer</td>
-    <td>Splunk search mode either normal or realtime</td>
+    <td>Initial start offset of the first search. Required</td>
+  </tr>
+  <tr>
+    <th>earliestTime</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>Earliest time of the time window.</td>
+  </tr>
+  <tr>
+    <th>latestTime</th>
+    <td>null</td>
+    <td>Consumer</td>
+    <td>Latest time of the time window</td>
   </tr>
    <tr>
     <th>maxRows</th>
     <td>0</td>
     <td>Consumer</td>
-    <td>Max. number of rows to return pr. poll</td>
+    <td>Max. number of rows to query splunk for when polling</td>
   </tr>
   <tr>
     <th>fieldList</th>
@@ -133,23 +164,5 @@ URI options:
     <td>null</td>
     <td>Consumer</td>
     <td>The Splunk query to run</td>
-  </tr>
-  <tr>
-    <th>earliestTime</th>
-    <td>null</td>
-    <td>Consumer</td>
-    <td>Earliest time of the time window</td>
-  </tr>
-  <tr>
-    <th>latestTime</th>
-    <td>null</td>
-    <td>Consumer</td>
-    <td>Latest time of the time window</td>
-  </tr>
-  <tr>
-    <th>initEarliestTime</th>
-    <td>null</td>
-    <td>Consumer</td>
-    <td>Initial start offset of the first search</td>
   </tr>
 </table>
