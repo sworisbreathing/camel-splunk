@@ -70,97 +70,97 @@ URI options:
 ============
 <table>
   <tr>
-    <th>Name</th>
+    <td>Name</td>
     <th>Default value</th>
     <th>Context</th>
     <th>Description</th>
   </tr>
   <tr>
-    <th>host</th>
+    <td>host</td>
     <td>localhost</td>
     <td>Shared</td>
     <td>The Splunk host.</td>
   </tr>
   <tr>
-    <th>port</th>
+    <td>port</td>
     <td>8089</td>
     <td>Shared</td>
     <td>Splunk port</td>
   </tr>
   <tr>
-    <th>username</th>
+    <td>username</td>
     <td>null</td>
     <td>Shared</td>
     <td>Splunk username</td>
   </tr>
   <tr>
-    <th>password</th>
+    <td>password</td>
     <td>null</td>
     <td>Shared</td>
     <td>Splunk password</td>
   </tr>
   <tr>
-    <th>connectionTimeout</th>
+    <td>connectionTimeout</td>
     <td>5000</td>
     <td>Shared</td>
     <td>Timeout when connecting to Splunk server</td>
   </tr>
   <tr>
-    <th>index</th>
+    <td>index</td>
     <td>null</td>
     <td>Producer</td>
     <td>Splunk index to write to</td>
   </tr>
   <tr>
-    <th>sourceType</th>
+    <td>sourceType</td>
     <td>null</td>
     <td>Producer</td>
     <td>Splunk SourceType arguement</td>
   </tr>
   <tr>
-    <th>source</th>
+    <td>source</td>
     <td>null</td>
     <td>Producer</td>
     <td>Splunk Source arguement</td>
   </tr>
   <tr>
-    <th>tcpRecieverPort</th>
+    <td>tcpRecieverPort</td>
     <td>0</td>
     <td>Producer</td>
     <td>Splunk tcp reciever port when using tcp connection</td>
   </tr>
   <tr>
-    <th>initEarliestTime</th>
+    <td>initEarliestTime</td>
     <td>null</td>
     <td>Consumer</td>
     <td>Initial start offset of the first search. Required</td>
   </tr>
   <tr>
-    <th>earliestTime</th>
+    <td>earliestTime</td>
     <td>null</td>
     <td>Consumer</td>
     <td>Earliest time of the time window.</td>
   </tr>
   <tr>
-    <th>latestTime</th>
+    <td>latestTime</td>
     <td>null</td>
     <td>Consumer</td>
     <td>Latest time of the time window</td>
   </tr>
    <tr>
-    <th>maxRows</th>
+    <td>maxRows</td>
     <td>0</td>
     <td>Consumer</td>
     <td>Max. number of rows to query splunk for when polling</td>
   </tr>
   <tr>
-    <th>fieldList</th>
+    <td>fieldList</td>
     <td>null</td>
     <td>Consumer</td>
     <td>Comma separated list of fields to return</td>
   </tr>
   <tr>
-    <th>search</th>
+    <td>search</td>
     <td>null</td>
     <td>Consumer</td>
     <td>The Splunk query to run</td>
