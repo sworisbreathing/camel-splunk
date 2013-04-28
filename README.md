@@ -166,3 +166,16 @@ URI options:
     <td>The Splunk query to run</td>
   </tr>
 </table>
+
+## Producer example
+```java
+from("direct:start")
+.to("splunk://submit?username=user&password=123&index=myindex&sourceType=someSourceType&source=mySource");
+```
+
+## Consumer example
+
+```java
+from("splunk://realtime?delay=5s&username=user&password=123&initEarliestTime=rt-10s&search=search index=myindex sourcetype=someSourcetype")
+.to("direct:search-result");
+```
