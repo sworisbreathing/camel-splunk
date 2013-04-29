@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.splunk.Args;
+import com.splunk.HttpException;
 
 /**
  * The Splunk producer.
@@ -27,7 +28,17 @@ public class SplunkProducer extends DefaultProducer {
     }
 
     public void process(Exchange exchange) throws Exception {
-        dataWriter.write(exchange.getIn().getMandatoryBody(SplunkEvent.class));
+        try {
+            dataWriter.write(exchange.getIn().getMandatoryBody(SplunkEvent.class));
+        } catch (HttpException e) {
+            if (e.getStatus() == 401) {
+                log.info("Got response 401 (call not properly authenticated) from Splunk. Trying to reconnect");
+                endpoint.reconnect();
+                dataWriter.start();
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -46,21 +57,21 @@ public class SplunkProducer extends DefaultProducer {
         switch (producerType) {
         case TCP: {
             LOG.info("Creating TcpDataWriter");
-            dataWriter = new TcpDataWriter(endpoint.getService(), buildSplunkArgs());
+            dataWriter = new TcpDataWriter(endpoint, buildSplunkArgs());
             ((TcpDataWriter)dataWriter).setPort(endpoint.getConfiguration().getTcpRecieverPort());
             LOG.info("TcpDataWriter created for endpoint " + endpoint);
             break;
         }
         case SUBMIT: {
             LOG.info("Creating SubmitDataWriter");
-            dataWriter = new SubmitDataWriter(endpoint.getService(), buildSplunkArgs());
+            dataWriter = new SubmitDataWriter(endpoint, buildSplunkArgs());
             ((SubmitDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
             LOG.info("SubmitDataWriter created for endpoint " + endpoint);
             break;
         }
         case STREAM: {
             LOG.info("Creating StreamDataWriter");
-            dataWriter = new StreamDataWriter(endpoint.getService(), buildSplunkArgs());
+            dataWriter = new StreamDataWriter(endpoint, buildSplunkArgs());
             ((StreamDataWriter)dataWriter).setIndex(endpoint.getConfiguration().getIndex());
             LOG.info("StreamDataWriter created for endpoint " + endpoint);
             break;

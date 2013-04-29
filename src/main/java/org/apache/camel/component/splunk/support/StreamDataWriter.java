@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import org.apache.camel.RuntimeCamelException;
+import org.apache.camel.component.splunk.SplunkEndpoint;
 
 import com.splunk.Args;
 import com.splunk.Index;
@@ -11,11 +12,10 @@ import com.splunk.Receiver;
 import com.splunk.Service;
 
 public class StreamDataWriter extends SplunkDataWriter {
-
     private String index;
 
-    public StreamDataWriter(Service service, Args args) {
-        super(service, args);
+    public StreamDataWriter(SplunkEndpoint endpoint, Args args) {
+        super(endpoint, args);
     }
 
     public void setIndex(String index) {

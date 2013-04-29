@@ -15,23 +15,37 @@ import org.apache.camel.util.ObjectHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.splunk.HttpException;
+
 /**
  * The Splunk consumer.
  */
 public class SplunkConsumer extends ScheduledBatchPollingConsumer {
     private final static Logger LOG = LoggerFactory.getLogger(SplunkConsumer.class);
     private SplunkDataReader dataReader;
+    private SplunkEndpoint endpoint;
 
     public SplunkConsumer(SplunkEndpoint endpoint, Processor processor, ConsumerType consumerType) {
         super(endpoint, processor);
+        this.endpoint = endpoint;
         dataReader = new SplunkDataReader(endpoint, consumerType);
     }
 
     @Override
     protected int poll() throws Exception {
-        List<SplunkEvent> events = dataReader.read();
-        Queue<Exchange> exchanges = createExchanges(events);
-        return processBatch(CastUtils.cast(exchanges));
+        try {
+            List<SplunkEvent> events = dataReader.read();
+            Queue<Exchange> exchanges = createExchanges(events);
+            return processBatch(CastUtils.cast(exchanges));
+        } catch (HttpException e) {
+            if (e.getStatus() == 401) {
+                log.info("Got response 401 (call not properly authenticated) from Splunk. Trying to reconnect");
+                endpoint.reconnect();
+                return 0;
+            } else {
+                throw e;
+            }
+        }
     }
 
     protected Queue<Exchange> createExchanges(List<SplunkEvent> splunkEvents) {

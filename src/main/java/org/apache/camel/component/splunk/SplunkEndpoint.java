@@ -123,4 +123,9 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
     public SplunkConfiguration getConfiguration() {
         return configuration;
     }
+
+    public synchronized void reconnect() {
+        this.service = null;
+        createService();
+    }
 }

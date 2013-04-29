@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 
+import org.apache.camel.component.splunk.SplunkEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.log4j.Logger;
 
@@ -16,11 +17,11 @@ public abstract class SplunkDataWriter implements DataWriter {
     protected final Logger logger = Logger.getLogger(getClass());
 
     protected Socket socket;
-    protected Service service;
+    protected SplunkEndpoint endpoint;
     protected Args args;
 
-    public SplunkDataWriter(Service service, Args args) {
-        this.service = service;
+    public SplunkDataWriter(SplunkEndpoint endpoint, Args args) {
+        this.endpoint = endpoint;
         this.args = args;
     }
 
@@ -45,8 +46,7 @@ public abstract class SplunkDataWriter implements DataWriter {
     @Override
     public synchronized void start() {
         try {
-            socket = createSocket(service);
-
+            socket = createSocket(endpoint.getService());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
