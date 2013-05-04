@@ -28,6 +28,14 @@ public class SplunkConsumer extends ScheduledBatchPollingConsumer {
     public SplunkConsumer(SplunkEndpoint endpoint, Processor processor, ConsumerType consumerType) {
         super(endpoint, processor);
         this.endpoint = endpoint;
+        if (consumerType.equals(ConsumerType.NORMAL) || consumerType.equals(ConsumerType.REALTIME)) {
+            if (ObjectHelper.isEmpty(endpoint.getConfiguration().getSearch())) {
+                throw new RuntimeException("Missing option 'search' with normal or realtime search");
+            }
+        }
+        if (consumerType.equals(ConsumerType.SAVEDSEARCH) && ObjectHelper.isEmpty(endpoint.getConfiguration().getSavedSearch())) {
+            throw new RuntimeException("Missing option 'savedSearch' with saved search");
+        }
         dataReader = new SplunkDataReader(endpoint, consumerType);
     }
 

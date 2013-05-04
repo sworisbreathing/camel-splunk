@@ -93,4 +93,7 @@ public class SplunkProducer extends DefaultProducer {
         return args;
     }
 
+    protected DataWriter getDataWriter() {
+        return dataWriter;
+    }
 }
