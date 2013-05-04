@@ -3,14 +3,9 @@ package org.apache.camel.component.splunk;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.component.splunk.event.SplunkEvent;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("run manually since it requires a running local splunk server")
-public class SplunkProducerTest extends SplunkTest {
-
-    // Splunk tcp reciever port configured in Splunk
-    private final String TCP_RECIEVER_PORT = "9997";
+public class ProducerTest extends SplunkMockTestSupport {
 
     @Test
     public void testStreamWriter() throws Exception {
@@ -52,14 +47,11 @@ public class SplunkProducerTest extends SplunkTest {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("direct:stream").to("splunk://stream?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&index=" + INDEX
-                                             + "&sourceType=StreamSourceType&source=StreamSource").to("mock:stream-result");
+                from("direct:stream").to("splunk://stream?username=foo&password=bar&index=myindex&sourceType=StreamSourceType&source=StreamSource").to("mock:stream-result");
 
-                from("direct:submit").to("splunk://submit?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&index=" + INDEX + "&sourceType=testSource&source=test")
-                    .to("mock:submitresult");
+                from("direct:submit").to("splunk://submit?username=foo&password=bar&index=myindex&sourceType=testSource&source=test").to("mock:submitresult");
 
-                from("direct:tcp").to("splunk://tcp?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&tcpRecieverPort=" + TCP_RECIEVER_PORT + "&index=" + INDEX
-                                          + "&sourceType=testSource&source=test").to("mock:tcpresult");
+                from("direct:tcp").to("splunk://tcp?username=foo&password=bar&tcpRecieverPort=2222&index=myindex&sourceType=testSource&source=test").to("mock:tcpresult");
             }
         };
     }

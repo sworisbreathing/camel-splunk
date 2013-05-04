@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<results preview='0'>
+<meta>
+<fieldOrder>
+<field>source</field>
+<field>sourcetype</field>
+<field>host</field>
+<field>group</field>
+<field>name</field>
+</fieldOrder>
+</meta>
+  <result offset='0'>
+    <field k='source'>
+      <value h='1'><text>/Applications/splunk-ace/var/log/splunk/metrics.log</text></value>
+    </field>
+    <field k='sourcetype'>
+      <value><text>splunkd</text></value>
+    </field>
+    <field k='host'>
+      <value><text>splunks-ombra.sv.splunk.com</text></value>
+    </field>
+    <field k='group'>
+      <value h='1'><text>tpool</text></value>
+    </field>
+    <field k='name'>
+      <value h='1'><text>name1</text></value>
+    </field>
+  </result>
+  <result offset='1'>
+    <field k='source'>
+      <value h='1'><text>/Applications/splunk-ace/var/log/splunk/metrics.log</text></value>
+    </field>
+    <field k='sourcetype'>
+      <value><text>splunkd</text></value>
+    </field>
+    <field k='host'>
+      <value><text>splunks-ombra.sv.splunk.com</text></value>
+    </field>
+    <field k='group'>
+      <value h='1'><text>tpool</text></value>
+    </field>
+    <field k='name'>
+      <value h='1'><text>name2</text></value>
+    </field>
+  </result>
+  <result offset='2'>
+    <field k='source'>
+      <value h='1'><text>/Applications/splunk-ace/var/log/splunk/metrics.log</text></value>
+    </field>
+    <field k='sourcetype'>
+      <value><text>splunkd</text></value>
+    </field>
+    <field k='host'>
+      <value><text>splunks-ombra.sv.splunk.com</text></value>
+    </field>
+    <field k='group'>
+      <value h='1'><text>tpool</text></value>
+    </field>
+    <field k='name'>
+      <value h='1'><text>name3</text></value>
+    </field>
+  </result>
+</results>

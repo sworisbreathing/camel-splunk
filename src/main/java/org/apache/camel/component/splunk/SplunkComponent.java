@@ -10,12 +10,18 @@ import org.apache.camel.impl.ScheduledPollEndpoint;
  * Represents the component that manages {@link SplunkEndpoint}.
  */
 public class SplunkComponent extends DefaultComponent {
+    static ConfigurationFactory connFactory = ConfigurationFactory.DEFAULT;
+
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        SplunkConfiguration configuration = new SplunkConfiguration();
+        SplunkConfiguration configuration = connFactory.parseMap(parameters);
         setProperties(configuration, parameters);
 
         Endpoint endpoint = new SplunkEndpoint(uri, this, configuration);
         ((ScheduledPollEndpoint)endpoint).setConsumerProperties(parameters);
         return endpoint;
+    }
+
+    public static void setConnFactory(ConfigurationFactory connFactory) {
+        SplunkComponent.connFactory = connFactory;
     }
 }

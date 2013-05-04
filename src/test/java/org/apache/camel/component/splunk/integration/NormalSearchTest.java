@@ -1,6 +1,7 @@
-package org.apache.camel.component.splunk;
+package org.apache.camel.component.splunk.integration;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -9,14 +10,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore("run manually since it requires a running local splunk server")
-public class RealtimeSearchTest extends SplunkTest {
-
+public class NormalSearchTest extends SplunkTest {
     @Test
-    public void testRealtimeSearch() throws Exception {
-        MockEndpoint searchMock = getMockEndpoint("mock:search-saved");
+    public void testSearch() throws Exception {
+        MockEndpoint searchMock = getMockEndpoint("mock:search-result");
         searchMock.expectedMessageCount(1);
+        getMockEndpoint("mock:submit-result").expectedMessageCount(1);
 
-        assertMockEndpointsSatisfied();
+        assertMockEndpointsSatisfied(20, TimeUnit.SECONDS);
         SplunkEvent recieved = searchMock.getReceivedExchanges().get(0).getIn().getBody(SplunkEvent.class);
         assertNotNull(recieved);
         Map<String, String> data = recieved.getEventData();
@@ -31,9 +32,10 @@ public class RealtimeSearchTest extends SplunkTest {
             public void configure() {
                 from("direct:submit").to("splunk://submit?username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&index=" + INDEX + "&sourceType=testSource&source=test")
                     .to("mock:submit-result");
+
                 from(
-                     "splunk://realtime?delay=5s&username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&initEarliestTime=rt-10s&search=search index=" + INDEX
-                         + " sourcetype=testSource").to("mock:search-saved");
+                     "splunk://normal?delay=5s&username=" + SPLUNK_USERNAME + "&password=" + SPLUNK_PASSWORD + "&initEarliestTime=-10s&latestTime=now" + "&search=search index="
+                         + INDEX + " sourcetype=testSource").to("mock:search-result");
             }
         };
     }

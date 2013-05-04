@@ -1,4 +1,4 @@
-package org.apache.camel.component.splunk;
+package org.apache.camel.component.splunk.integration;
 
 import org.apache.camel.component.splunk.event.SplunkEvent;
 import org.apache.camel.test.junit4.CamelTestSupport;

@@ -1,5 +1,13 @@
 package org.apache.camel.component.splunk;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import com.splunk.Service;
 
 public class SplunkConfiguration {
@@ -25,6 +33,17 @@ public class SplunkConfiguration {
     private String earliestTime;
     private String latestTime;
     private String initEarliestTime;
+
+    public SplunkConfiguration(final String host, final int port, final String username, final String password) {
+        this.host = host;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+    }
+
+    public SplunkConfiguration(final String username, final String password) {
+        this(Service.DEFAULT_HOST, Service.DEFAULT_PORT, username, password);
+    }
 
     public String getInitEarliestTime() {
         return initEarliestTime;
@@ -176,5 +195,43 @@ public class SplunkConfiguration {
 
     public void setSavedSearch(String savedSearch) {
         this.savedSearch = savedSearch;
+    }
+
+    public Service createService() {
+        final Map<String, Object> args = new HashMap<String, Object>();
+        if (host != null) {
+            args.put("host", host);
+        }
+        if (port > 0) {
+            args.put("port", port);
+        }
+        if (scheme != null) {
+            args.put("scheme", scheme);
+        }
+        if (app != null) {
+            args.put("app", app);
+        }
+        if (owner != null) {
+            args.put("owner", owner);
+        }
+
+        args.put("username", username);
+        args.put("password", password);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Future<Service> future = executor.submit(new Callable<Service>() {
+            public Service call() throws Exception {
+                return Service.connect(args);
+            }
+        });
+        try {
+            if (connectionTimeout > 0) {
+                return future.get(connectionTimeout, TimeUnit.MILLISECONDS);
+            } else {
+                return future.get();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("could not connect to Splunk Server @ %s:%d - %s", host, port, e.getMessage()));
+        }
     }
 }

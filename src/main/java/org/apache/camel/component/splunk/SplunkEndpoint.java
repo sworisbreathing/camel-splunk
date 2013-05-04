@@ -1,12 +1,5 @@
 package org.apache.camel.component.splunk;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.camel.Consumer;
@@ -66,48 +59,9 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
 
     public Service getService() {
         if (service == null) {
-            createService();
+            this.service = configuration.createService();
         }
         return service;
-    }
-
-    private void createService() {
-        final Map<String, Object> args = new HashMap<String, Object>();
-        if (configuration.getHost() != null) {
-            args.put("host", configuration.getHost());
-        }
-        if (configuration.getPort() != 0) {
-            args.put("port", configuration.getPort());
-        }
-        if (configuration.getScheme() != null) {
-            args.put("scheme", configuration.getScheme());
-        }
-        if (configuration.getApp() != null) {
-            args.put("app", configuration.getApp());
-        }
-        if (configuration.getOwner() != null) {
-            args.put("owner", configuration.getOwner());
-        }
-
-        args.put("username", configuration.getUsername());
-        args.put("password", configuration.getPassword());
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        Future<Service> future = executor.submit(new Callable<Service>() {
-            public Service call() throws Exception {
-                return Service.connect(args);
-            }
-        });
-
-        try {
-            if (configuration.getConnectionTimeout() > 0) {
-                service = future.get(configuration.getConnectionTimeout(), TimeUnit.MILLISECONDS);
-            } else {
-                service = future.get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("could not connect to Splunk Server @ %s:%d - %s", configuration.getHost(), configuration.getPort(), e.getMessage()));
-        }
     }
 
     private static String[] splitUri(String uri) {
@@ -126,6 +80,6 @@ public class SplunkEndpoint extends ScheduledPollEndpoint {
 
     public synchronized void reconnect() {
         this.service = null;
-        createService();
+        getService();
     }
 }
