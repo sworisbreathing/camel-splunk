@@ -21,6 +21,9 @@ see http://www.splunk.com
 
 * https://github.com/pax95/camel-splunk-example
 
+## Travis build
+[![Build Status](https://travis-ci.org/pax95/camel-splunk.png?branch=master)](https://travis-ci.org/pax95/camel-splunk)
+
 Uri format:
 ===========
 	splunk://[endpoint]?[options]
