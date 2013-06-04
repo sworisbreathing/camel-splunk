@@ -16,6 +16,7 @@ see http://www.splunk.com
 ## Install Splunk
 
 *  Download from http://www.splunk.com/download
+*  NOTE this component requires Splunk version 5.0.3 or better.
 
 ## Example project
 
