@@ -154,10 +154,10 @@ URI options:
     <td>Latest time of the time window</td>
   </tr>
    <tr>
-    <td>maxRows</td>
+    <td>count</td>
     <td>0</td>
     <td>Consumer</td>
-    <td>Max. number of rows to query splunk for when polling</td>
+    <td>A number that indicates the maximum number of entities to return. Note this is not the same as maxMessagesPerPoll which currently is unsupported</td>
   </tr>
   <tr>
     <td>fieldList</td>
