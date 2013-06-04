@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import com.splunk.Args;
 import com.splunk.Job;
 import com.splunk.ResultsReader;
-import com.splunk.ResultsReaderXml;
+import com.splunk.ResultsReaderJson;
 import com.splunk.SavedSearch;
 import com.splunk.SavedSearchCollection;
 import com.splunk.Service;
@@ -42,8 +42,8 @@ public class SplunkDataReader {
         this.consumerType = consumerType;
     }
 
-    public int getMaxRows() {
-        return endpoint.getConfiguration().getMaxRows();
+    public int getCount() {
+        return endpoint.getConfiguration().getCount();
     }
 
     public String getFieldList() {
@@ -274,17 +274,17 @@ public class SplunkDataReader {
         } else {
             total = job.getResultCount();
         }
-        if (getMaxRows() == 0 || total < getMaxRows()) {
+        if (getCount() == 0 || total < getCount()) {
             InputStream stream = null;
             Args outputArgs = new Args();
-            outputArgs.put("output_mode", "xml");
+            outputArgs.put("output_mode", "json");
             if (realtime) {
                 stream = job.getResultsPreview(outputArgs);
             } else {
                 stream = job.getResults(outputArgs);
             }
 
-            resultsReader = new ResultsReaderXml(stream);
+            resultsReader = new ResultsReaderJson(stream);
             while ((data = resultsReader.getNextEvent()) != null) {
                 splunkData = new SplunkEvent(data);
                 result.add(splunkData);
@@ -295,20 +295,20 @@ public class SplunkDataReader {
             while (offset < total) {
                 InputStream stream = null;
                 Args outputArgs = new Args();
-                outputArgs.put("output_mode", "xml");
-                outputArgs.put("count", getMaxRows());
+                outputArgs.put("output_mode", "json");
+                outputArgs.put("count", getCount());
                 outputArgs.put("offset", offset);
                 if (realtime) {
                     stream = job.getResultsPreview(outputArgs);
                 } else {
                     stream = job.getResults(outputArgs);
                 }
-                resultsReader = new ResultsReaderXml(stream);
+                resultsReader = new ResultsReaderJson(stream);
                 while ((data = resultsReader.getNextEvent()) != null) {
                     splunkData = new SplunkEvent(data);
                     result.add(splunkData);
                 }
-                offset += getMaxRows();
+                offset += getCount();
                 IOHelper.close(stream);
             }
         }

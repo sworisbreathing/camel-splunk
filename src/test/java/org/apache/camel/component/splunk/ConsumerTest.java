@@ -21,20 +21,21 @@ public class ConsumerTest extends SplunkMockTestSupport {
     @Test
     public void testSearch() throws Exception {
         MockEndpoint searchMock = getMockEndpoint("mock:search-result");
-        searchMock.expectedMessageCount(3);
+        searchMock.expectedMessageCount(1);
         JobCollection jobCollection = mock(JobCollection.class);
         Job jobMock = mock(Job.class);
         when(service.getJobs()).thenReturn(jobCollection);
         when(jobCollection.create(anyString(), anyMap())).thenReturn(jobMock);
         when(jobMock.isDone()).thenReturn(Boolean.TRUE);
-        InputStream stream = ConsumerTest.class.getResourceAsStream("/splunk-response.xml");
+        InputStream stream = ConsumerTest.class.getResourceAsStream("/resultsreader_test_data.json");
         when(jobMock.getResults(anyMap())).thenReturn(stream);
 
         assertMockEndpointsSatisfied(20, TimeUnit.SECONDS);
         SplunkEvent recieved = searchMock.getReceivedExchanges().get(0).getIn().getBody(SplunkEvent.class);
         assertNotNull(recieved);
         Map<String, String> data = recieved.getEventData();
-        assertEquals("name1", data.get("name"));
+        assertEquals("indexertpool", data.get("name"));
+        stream.close();
     }
 
     @Override

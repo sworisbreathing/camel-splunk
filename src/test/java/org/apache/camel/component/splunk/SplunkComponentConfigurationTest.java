@@ -55,7 +55,7 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
         component.setCamelContext(context);
         SplunkEndpoint endpoint = (SplunkEndpoint)component.createEndpoint("splunk://normal?username=test&password=pw&host=myhost&port=3333&delay=10s&"
                                                                            + "search=Splunk search query goes here&initEarliestTime=-1d"
-                                                                           + "&latestTime=now&fieldList=field1,field2&maxRows=10&" + "owner=me&app=fantasticapp");
+                                                                           + "&latestTime=now&fieldList=field1,field2&count=10&" + "owner=me&app=fantasticapp");
         assertEquals("myhost", endpoint.getConfiguration().getHost());
         assertEquals(3333, endpoint.getConfiguration().getPort());
         assertEquals("test", endpoint.getConfiguration().getUsername());
@@ -63,7 +63,7 @@ public class SplunkComponentConfigurationTest extends CamelTestSupport {
         assertEquals("-1d", endpoint.getConfiguration().getInitEarliestTime());
         assertEquals("now", endpoint.getConfiguration().getLatestTime());
         assertEquals("field1,field2", endpoint.getConfiguration().getFieldList());
-        assertEquals(10, endpoint.getConfiguration().getMaxRows());
+        assertEquals(10, endpoint.getConfiguration().getCount());
         assertEquals("me", endpoint.getConfiguration().getOwner());
         assertEquals("fantasticapp", endpoint.getConfiguration().getApp());
     }

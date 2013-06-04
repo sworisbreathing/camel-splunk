@@ -26,7 +26,7 @@ public class SplunkConfiguration {
     private int tcpRecieverPort;
 
     // consumer properties
-    private int maxRows = 0;
+    private int count = 0;
     private String fieldList;
     private String search;
     private String savedSearch;
@@ -53,12 +53,12 @@ public class SplunkConfiguration {
         this.initEarliestTime = initEarliestTime;
     }
 
-    public int getMaxRows() {
-        return maxRows;
+    public int getCount() {
+        return count;
     }
 
-    public void setMaxRows(int maxRows) {
-        this.maxRows = maxRows;
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public String getFieldList() {
